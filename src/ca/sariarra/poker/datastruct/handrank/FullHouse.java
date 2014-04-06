@@ -5,8 +5,8 @@ import static ca.sariarra.util.ParamUtil.ensureNotNull;
 import java.util.Arrays;
 
 import ca.sariarra.poker.datastruct.Card;
-import ca.sariarra.poker.datastruct.Rank;
 import ca.sariarra.poker.logic.AceHighComparator;
+import ca.sariarra.poker.types.Rank;
 
 public class FullHouse extends HandRank {
 

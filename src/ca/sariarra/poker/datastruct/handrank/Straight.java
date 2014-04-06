@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import ca.sariarra.poker.datastruct.Card;
-import ca.sariarra.poker.datastruct.Rank;
+import ca.sariarra.poker.types.Rank;
 
 public class Straight extends HandRank {
 

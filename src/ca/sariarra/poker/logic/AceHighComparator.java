@@ -3,7 +3,7 @@ package ca.sariarra.poker.logic;
 import java.util.Comparator;
 
 import ca.sariarra.poker.datastruct.Card;
-import ca.sariarra.poker.datastruct.Rank;
+import ca.sariarra.poker.types.Rank;
 
 public class AceHighComparator implements Comparator<Card> {
 

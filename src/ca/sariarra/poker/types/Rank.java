@@ -1,4 +1,4 @@
-package ca.sariarra.poker.datastruct;
+package ca.sariarra.poker.types;
 
 public enum Rank {
 	ACE("A", "Ace", 1),

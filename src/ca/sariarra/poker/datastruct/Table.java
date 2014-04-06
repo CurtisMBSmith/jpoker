@@ -64,8 +64,13 @@ public class Table {
 		return isCashTable;
 	}
 	
-	public void runGame() {
-		
+	/**
+	 * 
+	 */
+	public void runTable() {
+		while (true) {
+			
+		}
 	}
 
 	public int playersRemaining() {

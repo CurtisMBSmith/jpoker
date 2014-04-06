@@ -1,6 +1,8 @@
 package ca.sariarra.poker.datastruct;
 
 import static ca.sariarra.util.ParamUtil.ensureNotNull;
+import ca.sariarra.poker.types.Rank;
+import ca.sariarra.poker.types.Suit;
 
 public class Card implements Comparable<Card> {
 	private Rank rank;

@@ -10,8 +10,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import ca.sariarra.poker.datastruct.Card;
-import ca.sariarra.poker.datastruct.Rank;
-import ca.sariarra.poker.datastruct.Suit;
+import ca.sariarra.poker.types.Rank;
+import ca.sariarra.poker.types.Suit;
 
 public class StraightFlush extends HandRank {
 	

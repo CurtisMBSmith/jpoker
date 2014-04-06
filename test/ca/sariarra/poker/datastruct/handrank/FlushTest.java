@@ -7,8 +7,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import ca.sariarra.poker.datastruct.Card;
-import ca.sariarra.poker.datastruct.Rank;
-import ca.sariarra.poker.datastruct.Suit;
+import ca.sariarra.poker.types.Rank;
+import ca.sariarra.poker.types.Suit;
 
 public class FlushTest {
 

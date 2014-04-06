@@ -5,6 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import ca.sariarra.poker.types.Rank;
+import ca.sariarra.poker.types.Suit;
+
 public class Deck {
 	private List<Card> deck;
 	private List<Card> discards;
