@@ -9,9 +9,9 @@ import ca.sariarra.poker.types.Rank;
 import ca.sariarra.poker.types.Suit;
 
 public class Deck {
-	private List<Card> deck;
+	private final List<Card> deck;
 	private List<Card> discards;
-	
+
 	public Deck() {
 		deck = Arrays.asList(new Card[] {
 				new Card(Rank.ACE, Suit.HEARTS, this), new Card(Rank.ACE, Suit.DIAMONDS, this), new Card(Rank.ACE, Suit.CLUBS, this), new Card(Rank.ACE, Suit.SPADES, this),
@@ -29,29 +29,33 @@ public class Deck {
 				new Card(Rank.TWO, Suit.HEARTS, this), new Card(Rank.TWO, Suit.DIAMONDS, this), new Card(Rank.TWO, Suit.CLUBS, this), new Card(Rank.TWO, Suit.SPADES, this),
 		});
 		discards = new ArrayList<Card>();
-		
+
 		shuffle();
 	}
 
 	public Card deal() {
-		if (deck.size() == 0) {
-			return null;
+		if (deck.isEmpty()) {
+			reshuffle();
 		}
-		
+
+		if (deck.size() == 0) {
+			throw new RuntimeException("The deck is out of cards.");
+		}
+
 		return deck.remove(0);
 	}
-	
-	public void discard(Card c) {
+
+	public void discard(final Card c) {
 		discards.add(c);
 	}
-	
+
 	public void shuffle() {
 		if (deck.size() == 0) {
 			return;
 		}
-		
+
 		Random rand = new Random();
-		
+
 		// Run through the deck three times, randomizing the order of the cards.
 		for (int j = 0; j < 3; j++) {
 			for (int i = 0; i < deck.size(); i++) {
@@ -59,39 +63,48 @@ public class Deck {
 			}
 		}
 	}
-	
-	private void swapCards(int startIndex, int swapIndex) {
+
+	private void swapCards(final int startIndex, final int swapIndex) {
 		if (startIndex >= deck.size() || swapIndex >= swapIndex
 				|| startIndex < 0 || swapIndex < 0) {
 			throw new IllegalArgumentException("Start index and swap index must be within the deck bounds.");
 		}
-		
+
 		Card temp = deck.get(swapIndex);
 		deck.set(swapIndex, deck.get(startIndex));
 		deck.set(startIndex, temp);
 	}
-	
+
 	public void reshuffle() {
 		deck.addAll(discards);
 		discards = new ArrayList<Card>();
 		shuffle();
 	}
-	
+
 	public int cardsLeftInDeck() {
 		return deck.size();
 	}
-	
+
 	public int cardsInDiscards() {
 		return discards.size();
 	}
 
+	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		for (Card c : deck) {
 			sb.append(c.toString());
 			sb.append(' ');
 		}
-		
+
 		return sb.toString();
+	}
+
+	public boolean isEmpty() {
+		return deck.isEmpty() && discards.isEmpty();
+	}
+
+	public int size() {
+		return deck.size();
 	}
 }
