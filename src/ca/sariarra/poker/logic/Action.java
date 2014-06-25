@@ -2,8 +2,9 @@ package ca.sariarra.poker.logic;
 
 public class Action {
 
-	private final PlayerAction action;
+	private PlayerAction action;
 	private long betAmount;
+	private boolean foldConfirm;
 
 	public Action(final PlayerAction action) {
 		this.action = action;
@@ -14,8 +15,17 @@ public class Action {
 		this.betAmount = betAmount;
 	}
 
+	public Action(final PlayerAction action, final boolean confirmFold) {
+		this(action, 0);
+		this.foldConfirm = confirmFold;
+	}
+
 	public PlayerAction getAction() {
 		return action;
+	}
+
+	public void setAction(final PlayerAction newAction) {
+		action = newAction;
 	}
 
 	public long getBetAmount() {
@@ -24,5 +34,9 @@ public class Action {
 
 	public void setBetAmount(final long amount) {
 		betAmount = amount;
+	}
+
+	public boolean getFoldConfirm() {
+		return foldConfirm;
 	}
 }

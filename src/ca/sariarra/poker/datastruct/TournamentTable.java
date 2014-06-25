@@ -46,4 +46,10 @@ public class TournamentTable extends Table {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	protected void closeHand() {
+		// TODO Auto-generated method stub
+
+	}
 }

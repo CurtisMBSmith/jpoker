@@ -1,24 +1,31 @@
 package ca.sariarra.poker.datastruct.handrank;
 
+import java.util.List;
+
 import ca.sariarra.poker.datastruct.Card;
+import ca.sariarra.poker.datastruct.HandRanking;
 
-public abstract class HandRank implements Comparable<HandRank> {
-	private final boolean highRank;
-	private final Card[] cards;
-	
-	protected HandRank(boolean isHighRank, Card[] hand) {
-		highRank = isHighRank;
-		cards = hand;
+public class HandRank implements Comparable<HandRank> {
+	private final HandRanking rank;
+	private final List<Card> cards;
+
+	public HandRank(final HandRanking rank, final List<Card> hand) {
+		this.rank = rank;
+		this.cards = hand;
 	}
 
-	public boolean isHighRank() {
-		return highRank;
+	public HandRanking getRank() {
+		return rank;
 	}
-	
-	public abstract int compareTo(HandRank other);
 
-	public Card[] getCards() {
+	public List<Card> getCards() {
 		return cards;
 	}
-	
+
+	@Override
+	public int compareTo(final HandRank other) {
+		return rank.getComparator().compare(this, other);
+	}
+
+
 }

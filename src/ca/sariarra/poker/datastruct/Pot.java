@@ -87,4 +87,26 @@ public class Pot {
 		return size;
 	}
 
+	public void returnUncalledBet() {
+		if (!hasUncalledBet()) {
+			return;
+		}
+
+		long highWager = wagers.get(highestBettor);
+		long secondHighest = 0;
+		for (Entry<Seat, Long> wager : wagers.entrySet()) {
+			if (wager.getKey() == highestBettor) {
+				continue;
+			}
+
+			if (wager.getValue() > secondHighest) {
+				secondHighest = wager.getValue();
+			}
+		}
+
+		if (highWager - secondHighest > 0) {
+			highestBettor.giveWinnings(highWager - secondHighest);
+		}
+	}
+
 }

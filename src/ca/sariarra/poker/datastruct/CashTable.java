@@ -7,11 +7,12 @@ import java.util.List;
 import ca.sariarra.poker.logic.PokerGame;
 
 public class CashTable extends Table {
+	private final BlindLevel level;
 
 	public CashTable(final int numSeats, final boolean pIsCashTable, final PokerGame pGame,
-			final long pTableNum) {
+			final long pTableNum, final BlindLevel level) {
 		super(numSeats, pIsCashTable, pGame, pTableNum);
-		// TODO Auto-generated constructor stub
+		this.level = level;
 	}
 
 	@Override
@@ -45,8 +46,13 @@ public class CashTable extends Table {
 
 	@Override
 	protected BlindLevel getBlindLevel(final Date time) {
+		return level;
+	}
+
+	@Override
+	protected void closeHand() {
 		// TODO Auto-generated method stub
-		return null;
+
 	}
 
 

@@ -3,6 +3,7 @@ package ca.sariarra.poker.logic;
 import java.util.List;
 
 import ca.sariarra.poker.datastruct.BlindLevel;
+import ca.sariarra.poker.datastruct.Card;
 import ca.sariarra.poker.datastruct.Seat;
 
 public abstract class PokerGame {
@@ -44,5 +45,5 @@ public abstract class PokerGame {
 		return new HandDetails(level, game, actions);
 	}
 
-	public abstract List<Seat> determineWinner(CommunityCards commCards, Seat... contenders);
+	public abstract List<Seat> determineWinners(List<Card> communityCards, Seat... contenders);
 }

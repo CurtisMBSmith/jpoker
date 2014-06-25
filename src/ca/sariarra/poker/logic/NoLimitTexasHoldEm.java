@@ -8,6 +8,7 @@ import static ca.sariarra.poker.logic.HandAction.POST_BLIND_BETS;
 
 import java.util.List;
 
+import ca.sariarra.poker.datastruct.Card;
 import ca.sariarra.poker.datastruct.Seat;
 
 public class NoLimitTexasHoldEm extends PokerGame {
@@ -28,8 +29,7 @@ public class NoLimitTexasHoldEm extends PokerGame {
 	}
 
 	@Override
-	public List<Seat> determineWinner(final CommunityCards commCards,
-			final Seat... contenders) {
+	public List<Seat> determineWinners(final List<Card> communityCards, final Seat... contenders) {
 		// TODO Auto-generated method stub
 		return null;
 	}

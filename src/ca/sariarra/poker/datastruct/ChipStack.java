@@ -2,33 +2,33 @@ package ca.sariarra.poker.datastruct;
 
 public class ChipStack {
 	private long amount;
-	private boolean allowPennies;
-	
+	private final boolean allowPennies;
+
 	public ChipStack() {
-		amount = 0;
-		allowPennies = false;
+		this(false, 0);
 	}
-	
-	public ChipStack(boolean pAllowPennies) {
-		amount = 0;
-		allowPennies = pAllowPennies;
+
+	public ChipStack(final boolean pAllowPennies) {
+		this(pAllowPennies, 0);
 	}
-	
-	public void addChips(long pAmount) {
-		amount += pAmount;
+
+	public ChipStack(final boolean pAllowPennies, final long startingStack) {
+		this.amount = startingStack;
+		this.allowPennies = pAllowPennies;
 	}
-	
+
 	public boolean isEmpty() {
 		return amount == 0;
 	}
-	
-	public long removeChips(long pAmount)  {
+
+	public long removeChips(final long pAmount)  {
 		long res;
-		
+
 		res = pAmount >= amount ? amount : pAmount;
 		amount -= res;
 		return res;
 	}
+	@Override
 	public String toString() {
 		if (allowPennies) {
 			return "" + (amount / 100) + (amount % 100 < 10 ? ".0" : ".") + (amount % 100);
@@ -36,5 +36,9 @@ public class ChipStack {
 		else {
 			return "" + amount;
 		}
+	}
+
+	public void collect(final long pAmount) {
+		amount += pAmount;
 	}
 }

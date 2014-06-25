@@ -1,6 +1,8 @@
 package ca.sariarra.poker.logic;
 
 import static ca.sariarra.poker.logic.PlayerAction.BET;
+import static ca.sariarra.poker.logic.PlayerAction.CALL;
+import static ca.sariarra.poker.logic.PlayerAction.CHECK;
 import static ca.sariarra.poker.logic.PlayerAction.RAISE;
 
 import java.util.HashSet;
@@ -53,17 +55,66 @@ public class AvailableActions {
 			errorInPreviousAction = "Action " + pAction.getAction() + " is not valid.";
 		}
 
-		if (toCall != null && toCall > 0) {
-			if (pAction.getAction() == BET || pAction.getAction() == RAISE) {
-				if (pAction.getBetAmount() < toCall) {
-					pAction.setBetAmount(toCall);
-					return true;
+		// Validate the action itself.
+		switch(pAction.getAction()) {
+		case CHECK:
+			if (toCall != null && toCall > 0) {
+				errorInPreviousAction = "Cannot check - Current bet is " + toCall + ".";
+				return false;
+			}
+			return true;
+		case BET:
+		case RAISE:
+			if (toCall == null || toCall == 0) {
+				pAction.setAction(BET);
+
+				// Adjust the bet value.
+				if (minRaise != null && pAction.getBetAmount() < minRaise) {
+					pAction.setBetAmount(minRaise);
 				}
+				else if (maxRaise != null && pAction.getBetAmount() > maxRaise) {
+					pAction.setBetAmount(maxRaise);
+				}
+				return true;
+			}
+			else {
+				// Adjust the bet value.
+				if (pAction.getBetAmount() < toCall) {
+					pAction.setAction(CALL);
+					pAction.setBetAmount(toCall);
+				}
+				else if (minRaise != null && pAction.getBetAmount() < minRaise + toCall) {
+					pAction.setAction(RAISE);
+					pAction.setBetAmount(minRaise + toCall);
+				}
+				else if (maxRaise != null && pAction.getBetAmount() > maxRaise + toCall) {
+					pAction.setAction(RAISE);
+					pAction.setBetAmount(maxRaise + toCall);
+				}
+				else if (pAction.getBetAmount() == toCall){
+					pAction.setAction(CALL);
+				}
+
+				return true;
 			}
 
-
+		case CALL:
+			if (toCall == null || toCall == 0) {
+				pAction.setAction(CHECK);
+			}
+			else {
+				pAction.setBetAmount(toCall);
+			}
+			return true;
+		case FOLD:
+			if (pAction.getFoldConfirm()) {
+				return true;
+			}
+			errorInPreviousAction = "Are you sure you want to fold?";
+			return false;
+		default:
+			errorInPreviousAction = "Unverifiable action, please try again.";
+			return false;
 		}
-		// TODO Auto-generated method stub
-		return false;
 	}
 }

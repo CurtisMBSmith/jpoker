@@ -1,5 +1,6 @@
 package ca.sariarra.poker.datastruct;
 
+import static ca.sariarra.poker.logic.HandAction.SHOWDOWN;
 import static ca.sariarra.poker.logic.PlayerAction.BET;
 import static ca.sariarra.poker.logic.PlayerAction.CALL;
 import static ca.sariarra.poker.logic.PlayerAction.CHECK;
@@ -65,7 +66,9 @@ public abstract class Table implements Runnable {
 				setUpTableForNewHand();
 
 				HandDetails actions = game.getHandDetails(new Date().getTime() - tableStart - breakTime);
-				runHand(actions);
+				runHand(actions.getActions());
+				resolveHand(actions.getGame());
+				closeHand();
 
 				resetTableState();
 			}
@@ -79,6 +82,13 @@ public abstract class Table implements Runnable {
 			}
 		}
 
+	}
+
+	protected abstract void closeHand();
+
+	private void resolveHand(final PokerGame game) {
+		// TODO Auto-generated method stub
+		game.determineWinners(communityCards, seatsForHand);
 	}
 
 	private void resetTableState() {
@@ -125,13 +135,28 @@ public abstract class Table implements Runnable {
 
 	protected abstract BlindLevel getBlindLevel(Date time);
 
-	private void runHand(final HandDetails actions) {
-		HandAction[] handActions = actions.getActions();
+	private void runHand(final HandAction[] handActions) {
 		for (HandAction action : handActions) {
-			action.execute(this);
-		}
-		// TODO Auto-generated method stub
+			if (action == SHOWDOWN) {
+				break;
+			}
 
+			action.execute(this);
+			if (!isHandContested()) {
+				break;
+			}
+		}
+	}
+
+	private boolean isHandContested() {
+		int stillInHand = 0;
+		for (Seat seat : seatsForHand) {
+			if (!seat.isFolded()) {
+				stillInHand++;
+			}
+		}
+
+		return stillInHand > 1;
 	}
 
 	public void addPlayer(final Player p) {
@@ -375,6 +400,8 @@ public abstract class Table implements Runnable {
 
 			resolvePlayerAction(seatTurn, pAction);
 		}
+
+		pot.returnUncalledBet();
 	}
 
 	private void resolvePlayerAction(final Seat seat, final Action action) {
@@ -383,13 +410,11 @@ public abstract class Table implements Runnable {
 			break;
 		case CALL:
 		case RAISE:
+		case BET:
 			pot.add(seat, seat.bet(action.getBetAmount()));
 			break;
 		case FOLD:
 			seat.fold();
-			break;
-		case BET:
-			pot.add(seat, action.getBetAmount());
 			break;
 		}
 	}

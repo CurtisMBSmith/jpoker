@@ -82,4 +82,8 @@ public class Seat {
 		hand.setFolded(true);
 	}
 
+	public void giveWinnings(final long amount) {
+		chipStack.collect(amount);
+	}
+
 }
