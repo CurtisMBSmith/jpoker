@@ -6,6 +6,8 @@ import ca.sariarra.poker.datastruct.Card;
 import ca.sariarra.poker.datastruct.HandRanking;
 
 public class HandRank implements Comparable<HandRank> {
+	public static final int HAND_SIZE = 5;
+
 	private final HandRanking rank;
 	private final List<Card> cards;
 
