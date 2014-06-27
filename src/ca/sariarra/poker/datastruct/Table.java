@@ -10,6 +10,8 @@ import static ca.sariarra.poker.logic.PlayerAction.RAISE;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 
 import ca.sariarra.poker.logic.Action;
@@ -87,8 +89,18 @@ public abstract class Table implements Runnable {
 	protected abstract void closeHand();
 
 	private void resolveHand(final PokerGame game) {
+		List<Seat> winners;
+		Map<Long, List<Seat>> potsByContestors = pot.groupPotsByContestors();
+		for (Entry<Long, List<Seat>> groupings : potsByContestors.entrySet()) {
+			winners = game.determineWinners(communityCards, groupings.getValue());
+
+			divideWinningsAmongWinners(groupings.getKey(), winners);
+		}
+	}
+
+	private void divideWinningsAmongWinners(final Long key, final List<Seat> winners) {
 		// TODO Auto-generated method stub
-		game.determineWinners(communityCards, seatsForHand);
+
 	}
 
 	private void resetTableState() {

@@ -1,6 +1,7 @@
 package ca.sariarra.poker.datastruct;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -107,6 +108,11 @@ public class Pot {
 		if (highWager - secondHighest > 0) {
 			highestBettor.giveWinnings(highWager - secondHighest);
 		}
+	}
+
+	public Map<Long, List<Seat>> groupPotsByContestors() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -4,7 +4,6 @@ import static ca.sariarra.poker.datastruct.handrank.HandRank.HAND_SIZE;
 import static ca.sariarra.poker.types.Rank.ACE;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +23,7 @@ public enum HandRanking implements Rankable {
 		public int compare(final HandRank o1, final HandRank o2) {
 			int comparedByRankings = o1.getRank().compareTo(o2.getRank());
 			if (comparedByRankings == 0) {
-				return o1.getCards().get(0).getRank().compareTo(o2.getCards().get(0).getRank());
+				return o1.getCards().get(0).rank().compareTo(o2.getCards().get(0).rank());
 			}
 			else {
 				return comparedByRankings;
@@ -53,10 +52,11 @@ public enum HandRanking implements Rankable {
 
 					int streak = 1;
 					int i = cardsOrderedByRank.size() - 1;
-					while (i >= 0 && streak < 5) {
+					while (i > 0 && streak < 5) {
 						i--;
 
-						if (cards.get(i + 1).getRank().getValue() - cards.get(i).getRank().getValue() == 1) {
+						if (cardsOrderedByRank.get(i + 1).rank().getValue() - cardsOrderedByRank.get(i).rank().getValue() == 1
+								|| cardsOrderedByRank.get(i + 1).rank().getValue() - cardsOrderedByRank.get(i).rank().getValue() == -12) {
 							streak++;
 						}
 						else {
@@ -83,9 +83,9 @@ public enum HandRanking implements Rankable {
 		public int compare(final HandRank o1, final HandRank o2) {
 			int comparedByRankings = o1.getRank().compareTo(o2.getRank());
 			if (comparedByRankings == 0) {
-				int secondaryComparison = o1.getCards().get(0).getRank().compareTo(o2.getCards().get(0).getRank());
+				int secondaryComparison = o1.getCards().get(0).rank().compareTo(o2.getCards().get(0).rank());
 				if (secondaryComparison == 0) {
-					return o1.getCards().get(4).getRank().compareTo(o2.getCards().get(4).getRank());
+					return o1.getCards().get(4).rank().compareTo(o2.getCards().get(4).rank());
 				}
 				else {
 					return secondaryComparison;
@@ -115,12 +115,11 @@ public enum HandRanking implements Rankable {
 				List<Card> result = cardsByRank.get(fourOfAKindRank);
 
 				// Find the kicker.
-				List<Card> cardsCopy = new ArrayList<Card>(cards.size());
-				Collections.copy(cardsCopy, cards);
+				List<Card> cardsCopy = new ArrayList<Card>(cards);
 
 				sortByRank(cardsCopy);
 				for (int i = cardsCopy.size() - 1; i >= 0; i--) {
-					if (cardsCopy.get(i).getRank() != fourOfAKindRank) {
+					if (cardsCopy.get(i).rank() != fourOfAKindRank) {
 						result.add(cardsCopy.get(i));
 						break;
 					}
@@ -138,9 +137,9 @@ public enum HandRanking implements Rankable {
 		public int compare(final HandRank o1, final HandRank o2) {
 			int comparedByRankings = o1.getRank().compareTo(o2.getRank());
 			if (comparedByRankings == 0) {
-				int secondaryComparison = o1.getCards().get(0).getRank().compareTo(o2.getCards().get(0).getRank());
+				int secondaryComparison = o1.getCards().get(0).rank().compareTo(o2.getCards().get(0).rank());
 				if (secondaryComparison == 0) {
-					return o1.getCards().get(3).getRank().compareTo(o2.getCards().get(3).getRank());
+					return o1.getCards().get(3).rank().compareTo(o2.getCards().get(3).rank());
 				}
 				else {
 					return secondaryComparison;
@@ -172,8 +171,7 @@ public enum HandRanking implements Rankable {
 				result = result.subList(0, 3);
 
 				// Find the kicker.
-				List<Card> cardsCopy = new ArrayList<Card>(cards.size());
-				Collections.copy(cardsCopy, cards);
+				List<Card> cardsCopy = new ArrayList<Card>(cards);
 
 				// Remove any cards of the three-of-a-kind rank.
 				removeCardsOfRank(cardsCopy, threeOfAKindRank);
@@ -233,6 +231,14 @@ public enum HandRanking implements Rankable {
 			for (Entry<Suit, List<Card>> grouping : cardsBySuit.entrySet()) {
 				cardsOfSuit = grouping.getValue();
 
+				if (cardsOfSuit.size() < HAND_SIZE) {
+					continue;
+				}
+
+				sortByRank(cardsOfSuit);
+				if (cardsOfSuit.get(0).rank() == ACE) {
+					cardsOfSuit.add(cardsOfSuit.remove(0));
+				}
 				if (cardsOfSuit.size() >= HAND_SIZE) {
 					HandRank interimResult = new HandRank(this, cardsOfSuit.subList(
 							cardsOfSuit.size() - HAND_SIZE, cardsOfSuit.size()));
@@ -252,7 +258,7 @@ public enum HandRanking implements Rankable {
 		public int compare(final HandRank o1, final HandRank o2) {
 			int comparedByRankings = o1.getRank().compareTo(o2.getRank());
 			if (comparedByRankings == 0) {
-				return o1.getCards().get(0).getRank().compareTo(o2.getCards().get(0).getRank());
+				return o1.getCards().get(0).rank().compareTo(o2.getCards().get(0).rank());
 			}
 			else {
 				return comparedByRankings;
@@ -262,8 +268,6 @@ public enum HandRanking implements Rankable {
 	{
 		@Override
 		public HandRank rankHand(final List<Card> cards) {
-			List<Card> cardsCopy = new ArrayList<Card>(cards.size());
-			Collections.copy(cardsCopy, cards);
 			List<Card> cardsOrderedByRank = orderCardsByRank(cards, true);
 
 			if (cardsOrderedByRank.size() < 5) {
@@ -272,10 +276,11 @@ public enum HandRanking implements Rankable {
 
 			int streak = 1;
 			int i = cardsOrderedByRank.size() - 1;
-			while (i >= 0 && streak < 5) {
+			while (i > 0 && streak < 5) {
 				i--;
 
-				if (cards.get(i + 1).getRank().getValue() - cards.get(i).getRank().getValue() == 1) {
+				if (cards.get(i + 1).rank().getValue() - cards.get(i).rank().getValue() == 1
+						|| cards.get(i + 1).rank().getValue() - cards.get(i).rank().getValue() == -12) {
 					streak++;
 				}
 				else {
@@ -296,11 +301,11 @@ public enum HandRanking implements Rankable {
 		public int compare(final HandRank o1, final HandRank o2) {
 			int comparedByRankings = o1.getRank().compareTo(o2.getRank());
 			if (comparedByRankings == 0) {
-				int secondaryComparison = o1.getCards().get(0).getRank().compareTo(o2.getCards().get(0).getRank());
+				int secondaryComparison = o1.getCards().get(0).rank().compareTo(o2.getCards().get(0).rank());
 				if (secondaryComparison == 0) {
-					int tertiaryComparison = o1.getCards().get(3).getRank().compareTo(o2.getCards().get(3).getRank());
+					int tertiaryComparison = o1.getCards().get(3).rank().compareTo(o2.getCards().get(3).rank());
 					if (tertiaryComparison == 0) {
-						return o1.getCards().get(4).getRank().compareTo(o2.getCards().get(4).getRank());
+						return o1.getCards().get(4).rank().compareTo(o2.getCards().get(4).rank());
 					}
 					else {
 						return tertiaryComparison;
@@ -335,12 +340,11 @@ public enum HandRanking implements Rankable {
 				result = result.subList(0, 3);
 
 				// Find the kickers.
-				List<Card> cardsCopy = new ArrayList<Card>(cards.size());
-				Collections.copy(cardsCopy, cards);
+				List<Card> cardsCopy = new ArrayList<Card>(cards);
 
 				sortByRank(cardsCopy);
 				for (int i = cardsCopy.size() - 1; i >= 0; i--) {
-					if (cardsCopy.get(i).getRank() != threeOfAKindRank) {
+					if (cardsCopy.get(i).rank() != threeOfAKindRank) {
 						result.add(cardsCopy.get(i));
 					}
 
@@ -361,11 +365,11 @@ public enum HandRanking implements Rankable {
 		public int compare(final HandRank o1, final HandRank o2) {
 			int comparedByRankings = o1.getRank().compareTo(o2.getRank());
 			if (comparedByRankings == 0) {
-				int secondaryComparison = o1.getCards().get(0).getRank().compareTo(o2.getCards().get(0).getRank());
+				int secondaryComparison = o1.getCards().get(0).rank().compareTo(o2.getCards().get(0).rank());
 				if (secondaryComparison == 0) {
-					int tertiaryComparison = o1.getCards().get(2).getRank().compareTo(o2.getCards().get(2).getRank());
+					int tertiaryComparison = o1.getCards().get(2).rank().compareTo(o2.getCards().get(2).rank());
 					if (tertiaryComparison == 0) {
-						return o1.getCards().get(4).getRank().compareTo(o2.getCards().get(4).getRank());
+						return o1.getCards().get(4).rank().compareTo(o2.getCards().get(4).rank());
 					}
 					else {
 						return tertiaryComparison;
@@ -401,8 +405,7 @@ public enum HandRanking implements Rankable {
 				result = result.subList(0, 2);
 
 				// Find the second pair.
-				List<Card> cardsCopy = new ArrayList<Card>(cards.size());
-				Collections.copy(cardsCopy, cards);
+				List<Card> cardsCopy = new ArrayList<Card>(cards);
 
 				// Remove any cards of the first two-of-a-kind rank.
 				removeCardsOfRank(cardsCopy, topTwoOfAKindRank);
@@ -426,15 +429,14 @@ public enum HandRanking implements Rankable {
 					res = new HandRank(this, result);
 
 					// Find the kicker
-					cardsCopy = new ArrayList<Card>(cards.size());
-					Collections.copy(cardsCopy, cards);
+					cardsCopy = new ArrayList<Card>(cards);
 					removeCardsOfRank(cardsCopy, topTwoOfAKindRank);
 					removeCardsOfRank(cardsCopy, bottomTwoOfAKindRank);
 
 					sortByRank(cardsCopy);
 					for (int i = cardsCopy.size() - 1; i >= 0; i--) {
-						if (cardsCopy.get(i).getRank() != topTwoOfAKindRank
-								&& cardsCopy.get(i).getRank() != bottomTwoOfAKindRank) {
+						if (cardsCopy.get(i).rank() != topTwoOfAKindRank
+								&& cardsCopy.get(i).rank() != bottomTwoOfAKindRank) {
 							result.add(cardsCopy.get(i));
 						}
 
@@ -454,13 +456,13 @@ public enum HandRanking implements Rankable {
 		public int compare(final HandRank o1, final HandRank o2) {
 			int comparedByRankings = o1.getRank().compareTo(o2.getRank());
 			if (comparedByRankings == 0) {
-				int secondaryComparison = o1.getCards().get(0).getRank().compareTo(o2.getCards().get(0).getRank());
+				int secondaryComparison = o1.getCards().get(0).rank().compareTo(o2.getCards().get(0).rank());
 				if (secondaryComparison == 0) {
-					int tertiaryComparison = o1.getCards().get(2).getRank().compareTo(o2.getCards().get(2).getRank());
+					int tertiaryComparison = o1.getCards().get(2).rank().compareTo(o2.getCards().get(2).rank());
 					if (tertiaryComparison == 0) {
-						int quaternaryComparison = o1.getCards().get(3).getRank().compareTo(o2.getCards().get(3).getRank());
+						int quaternaryComparison = o1.getCards().get(3).rank().compareTo(o2.getCards().get(3).rank());
 						if (quaternaryComparison == 0) {
-							return o1.getCards().get(4).getRank().compareTo(o2.getCards().get(4).getRank());
+							return o1.getCards().get(4).rank().compareTo(o2.getCards().get(4).rank());
 						}
 						else {
 							return quaternaryComparison;
@@ -486,7 +488,7 @@ public enum HandRanking implements Rankable {
 
 			Rank pairRank = null;
 			for (Entry<Rank, List<Card>> entry : cardsByRank.entrySet()) {
-				if (entry.getValue().size() >= 3) {
+				if (entry.getValue().size() >= 2) {
 					if (pairRank == null || entry.getKey().compareTo(pairRank) > 0) {
 						pairRank = entry.getKey();
 					}
@@ -499,12 +501,15 @@ public enum HandRanking implements Rankable {
 				result = result.subList(0, 2);
 
 				// Find the kickers.
-				List<Card> cardsCopy = new ArrayList<Card>(cards.size());
-				Collections.copy(cardsCopy, cards);
+				List<Card> cardsCopy = new ArrayList<Card>(cards);
 
 				sortByRank(cardsCopy);
+				if (cardsCopy.get(0).rank() == ACE) {
+					cardsCopy.add(cardsCopy.get(0));
+				}
+
 				for (int i = cardsCopy.size() - 1; i >= 0; i--) {
-					if (cardsCopy.get(i).getRank() != pairRank) {
+					if (cardsCopy.get(i).rank() != pairRank) {
 						result.add(cardsCopy.get(i));
 					}
 
@@ -527,7 +532,7 @@ public enum HandRanking implements Rankable {
 			if (comparedByRankings == 0) {
 				int result = 0;
 				for (int i = 0; i < HAND_SIZE; i++) {
-					result = o1.getCards().get(i).getRank().compareTo(o2.getCards().get(i).getRank());
+					result = o1.getCards().get(i).rank().compareTo(o2.getCards().get(i).rank());
 					if (result != 0) {
 						break;
 					}
@@ -544,8 +549,9 @@ public enum HandRanking implements Rankable {
 	{
 		@Override
 		public HandRank rankHand(final List<Card> cards) {
-			List<Card> cardsCopy = new ArrayList<Card>(cards.size());
-			Collections.copy(cardsCopy, cards);
+			List<Card> cardsCopy = new ArrayList<Card>(cards);
+			removeDuplicateRanks(cardsCopy);
+			sortByRank(cardsCopy);
 
 			return new HandRank(this, cardsCopy.subList(cardsCopy.size() - HAND_SIZE, cardsCopy.size()));
 		}
@@ -566,7 +572,7 @@ public enum HandRanking implements Rankable {
 		removeDuplicateRanks(cards);
 
 		// Add an ace to the end as well if aces can be high and low.
-		if (aceHiLow && cards.size() > 0 && cards.get(0).getRank() == ACE) {
+		if (aceHiLow && cards.size() > 0 && cards.get(0).rank() == ACE) {
 			cards.add(cards.get(0));
 		}
 
@@ -574,28 +580,34 @@ public enum HandRanking implements Rankable {
 	}
 
 	public static void removeDuplicateRanks(final List<Card> cards) {
+		List<Card> toRemove = new ArrayList<Card>();
 		for (int i = 0; i < cards.size(); i++) {
 			for (int j = cards.size() - 1; j > i; j--) {
-				if (cards.get(j).getRank() == cards.get(i).getRank()) {
-					cards.remove(j);
+				if (cards.get(j).rank() == cards.get(i).rank()) {
+					toRemove.add(cards.get(j));
 				}
 			}
 		}
+
+		cards.removeAll(toRemove);
 	}
 
 	public static void removeCardsOfRank(final List<Card> cards, final Rank rank) {
+		List<Card> toRemove = new ArrayList<Card>();
 		for (Card c : cards) {
-			if (c.getRank() == rank) {
-				cards.remove(c);
+			if (c.rank() == rank) {
+				toRemove.add(c);
 			}
 		}
+
+		cards.removeAll(toRemove);
 	}
 
 	public static void sortByRank(final List<Card> cards) {
 		cards.sort(new Comparator<Card>() {
 			@Override
 			public int compare(final Card o1, final Card o2) {
-				return o1.getRank().compareTo(o2.getRank());
+				return o1.rank().compareTo(o2.rank());
 			}
 		});
 	}
@@ -605,7 +617,7 @@ public enum HandRanking implements Rankable {
 		for (Suit suit : Suit.values()) {
 			List<Card> cardsBySuit = new ArrayList<Card>(7);
 			for (Card card : cards) {
-				if (card.getSuit() == suit) {
+				if (card.suit() == suit) {
 					cardsBySuit.add(card);
 				}
 			}
@@ -621,7 +633,7 @@ public enum HandRanking implements Rankable {
 		for (Rank rank : Rank.values()) {
 			List<Card> cardsByRank = new ArrayList<Card>(7);
 			for (Card card : cards) {
-				if (card.getRank() == rank) {
+				if (card.rank() == rank) {
 					cardsByRank.add(card);
 				}
 			}

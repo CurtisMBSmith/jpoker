@@ -5,6 +5,7 @@ import static ca.sariarra.util.ParamUtil.ensureNotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import ca.sariarra.poker.datastruct.handrank.HandRank;
 import ca.sariarra.poker.logic.Action;
 import ca.sariarra.poker.logic.AvailableActions;
 
@@ -84,6 +85,14 @@ public class Seat {
 
 	public void giveWinnings(final long amount) {
 		chipStack.collect(amount);
+	}
+
+	public HandRank getHandRanking() {
+		return hand.getRanking();
+	}
+
+	public void setHandRanking(final HandRank rank) {
+		hand.setRanking(rank);
 	}
 
 }

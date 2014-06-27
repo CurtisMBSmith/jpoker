@@ -9,17 +9,17 @@ public class AceHighComparator implements Comparator<Card> {
 
 	@Override
 	public int compare(Card o1, Card o2) {
-		if (o1.getRank() == Rank.ACE && o2.getRank() == Rank.ACE) {
+		if (o1.rank() == Rank.ACE && o2.rank() == Rank.ACE) {
 			return 0;
 		}
-		else if (o1.getRank() == Rank.ACE && o2.getRank() != Rank.ACE) {
+		else if (o1.rank() == Rank.ACE && o2.rank() != Rank.ACE) {
 			return 1;
 		}
-		else if (o2.getRank() == Rank.ACE && o1.getRank() != Rank.ACE) {
+		else if (o2.rank() == Rank.ACE && o1.rank() != Rank.ACE) {
 			return -1;
 		}
 		else {
-			return o1.getRank().compareTo(o2.getRank());
+			return o1.rank().compareTo(o2.rank());
 		}
 	}
 	

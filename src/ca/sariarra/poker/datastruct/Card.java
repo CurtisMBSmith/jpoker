@@ -27,11 +27,11 @@ public class Card implements Comparable<Card> {
 		suit = aSuit;
 	}
 	
-	public Rank getRank() {
+	public Rank rank() {
 		return rank;
 	}
 	
-	public Suit getSuit() {
+	public Suit suit() {
 		return suit;
 	}
 	
@@ -51,13 +51,13 @@ public class Card implements Comparable<Card> {
 		if (o instanceof Card) {
 			Card other = (Card) o;
 			
-			return rank == other.getRank() && suit == other.getSuit();
+			return rank == other.rank() && suit == other.suit();
 		}
 		
 		return false;
 	}
 	
 	public int compareTo(Card other) {
-		return rank.compareTo(other.getRank());
+		return rank.compareTo(other.rank());
 	}
 }

@@ -19,6 +19,7 @@ import static ca.sariarra.poker.types.Suit.HEARTS;
 import static ca.sariarra.poker.types.Suit.SPADES;
 
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import ca.sariarra.poker.datastruct.Card;
 import ca.sariarra.poker.types.Rank;
@@ -27,8 +28,11 @@ import ca.sariarra.poker.types.Suit;
 public class AbstractHandRankTest {
 
 	public List<Card> makeCardsFromStrings(final String... cards) {
-
-		return null;
+		List<Card> results = new CopyOnWriteArrayList<Card>();
+		for (String c : cards) {
+			results.add(new Card(getRankFromChar(c.charAt(0)), getSuitFromChar(c.charAt(1))));
+		}
+		return results;
 	}
 
 	public Rank getRankFromChar(final char ch) {

@@ -3,10 +3,13 @@ package ca.sariarra.poker.datastruct;
 import java.util.ArrayList;
 import java.util.List;
 
+import ca.sariarra.poker.datastruct.handrank.HandRank;
+
 public class Hand {
 	private List<Card> exposedCards;
 	private List<Card> holeCards;
 	private boolean folded;
+	private HandRank ranking;
 
 	public Hand() {
 		exposedCards = new ArrayList<Card>(4);
@@ -45,6 +48,7 @@ public class Hand {
 		holeCards = new ArrayList<Card>(4);
 
 		folded = false;
+		ranking = null;
 	}
 
 	public void setFolded(final boolean fold) {
@@ -65,5 +69,20 @@ public class Hand {
 
 	public void addExposed(final Card card) {
 		exposedCards.add(card);
+	}
+
+	public List<Card> getCards() {
+		List<Card> result = new ArrayList<Card>();
+		result.addAll(exposedCards);
+		result.addAll(holeCards);
+		return result;
+	}
+
+	public HandRank getRanking() {
+		return ranking;
+	}
+
+	public void setRanking(final HandRank rank) {
+		ranking = rank;
 	}
 }
