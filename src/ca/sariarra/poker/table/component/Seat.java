@@ -13,7 +13,7 @@ import ca.sariarra.poker.player.actions.AvailableActions;
 
 public class Seat {
 	private final Player player;
-	private Hand hand;
+	private final Hand hand;
 	private ChipStack chipStack;
 	private boolean sittingOut;
 
@@ -21,6 +21,11 @@ public class Seat {
 		notNull("Player", p);
 		player = p;
 		sittingOut = true;
+		hand = new Hand();
+	}
+
+	public void resetForHand() {
+		hand.resetHand();
 	}
 
 	public void setChips(final ChipStack cs) {
@@ -97,4 +102,28 @@ public class Seat {
 		hand.setRanking(rank);
 	}
 
+	public long getChips() {
+		return chipStack.getTotal();
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+
+		sb.append(player.getName());
+		for (int i = sb.length(); i < 20; i++) {
+			sb.append(' ');
+		}
+		sb.append(" [");
+		sb.append(hand.hasFolded() ? 'F' : ' ');
+		sb.append(chipStack.isEmpty() ? 'A' : ' ');
+		sb.append(sittingOut ? 'S' : ' ');
+		sb.append(']');
+
+		sb.append(" (");
+		sb.append(chipStack.getTotal());
+		sb.append(" chips)");
+
+		return sb.toString();
+	}
 }

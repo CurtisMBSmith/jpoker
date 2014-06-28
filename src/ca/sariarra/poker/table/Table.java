@@ -10,8 +10,6 @@ import static ca.sariarra.poker.player.actions.PlayerAction.RAISE;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Random;
 
 import ca.sariarra.poker.card.Card;
@@ -25,6 +23,7 @@ import ca.sariarra.poker.player.actions.PlayerAction;
 import ca.sariarra.poker.table.component.BlindLevel;
 import ca.sariarra.poker.table.component.Deck;
 import ca.sariarra.poker.table.component.Pot;
+import ca.sariarra.poker.table.component.PotManager;
 import ca.sariarra.poker.table.component.Seat;
 
 public abstract class Table implements Runnable {
@@ -37,7 +36,7 @@ public abstract class Table implements Runnable {
 	private final List<Player> waitList;
 	private final boolean isCashTable;
 	private final long tableNum;
-	private Pot pot;
+	private PotManager pot;
 
 	private final long tableStart;
 	private final long breakTime;
@@ -96,11 +95,11 @@ public abstract class Table implements Runnable {
 
 	private void resolveHand(final PokerGame game) {
 		List<Seat> winners;
-		Map<Long, List<Seat>> potsByContestors = pot.groupPotsByContestors();
-		for (Entry<Long, List<Seat>> groupings : potsByContestors.entrySet()) {
-			winners = game.determineWinners(communityCards, groupings.getValue());
+		List<Pot> potsByContestors = pot.groupPotsByContestors();
+		for (Pot pot : potsByContestors) {
+			winners = game.determineWinners(communityCards, pot.getContestors());
 
-			divideWinningsAmongWinners(groupings.getKey(), winners);
+			divideWinningsAmongWinners(pot.getAmount(), winners);
 		}
 	}
 
@@ -153,9 +152,9 @@ public abstract class Table implements Runnable {
 
 	private void setUpTableForNewHand() {
 		handStart = new Date();
-		pot.reset();
 		moveButton();
 		setSeatsForHand();
+		pot.reset(seatsForHand);
 		deck.shuffle();
 	}
 

@@ -6,16 +6,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class Pot {
+public class PotManager {
 	private Map<Seat, Long> wagers;
 	private Seat highestBettor;
 
-	public Pot() {
-		reset();
-	}
-
-	public void reset() {
+	public void reset(final Seat[] seatsForHand) {
 		wagers = new HashMap<Seat, Long>(10);
+		for (Seat s : seatsForHand) {
+			wagers.put(s, 0l);
+		}
+
 		highestBettor = null;
 	}
 
@@ -109,20 +109,25 @@ public class Pot {
 		if (highWager - secondHighest > 0) {
 			highestBettor.giveWinnings(highWager - secondHighest);
 		}
+
+		highestBettor = null;
 	}
 
-	public Map<Long, List<Seat>> groupPotsByContestors() {
-		Map<Long, List<Seat>> potsByContestors = new HashMap<Long, List<Seat>>();
+	public List<Pot> groupPotsByContestors() {
+		Map<Seat, Long> wagersCopy = new HashMap<Seat, Long>(wagers);
+		List<Pot> pots = new ArrayList<Pot>();
 
 		Long lowestTotalWager;
 		List<Seat> contestors;
-		while (!wagers.isEmpty()) {
+		List<Seat> toRemove;
+		while (!wagersCopy.isEmpty()) {
 			lowestTotalWager = null;
 			contestors = new ArrayList<Seat>();
+			toRemove = new ArrayList<Seat>();
 
-			for (Entry<Seat, Long> wager : wagers.entrySet()) {
+			for (Entry<Seat, Long> wager : wagersCopy.entrySet()) {
 				if (wager.getKey().isFolded() || wager.getValue() == 0) {
-					wagers.remove(wager.getKey());
+					toRemove.add(wager.getKey());
 					continue;
 				}
 
@@ -130,15 +135,26 @@ public class Pot {
 					lowestTotalWager = wager.getValue();
 					contestors.add(wager.getKey());
 				}
+				else if (lowestTotalWager != null && lowestTotalWager <= wager.getValue()) {
+					contestors.add(wager.getKey());
+				}
 			}
 
-			potsByContestors.put(lowestTotalWager, contestors);
-			for (Entry<Seat, Long> wager : wagers.entrySet()) {
-				wagers.put(wager.getKey(), wager.getValue() - lowestTotalWager);
+			if (lowestTotalWager == null) {
+				break;
+			}
+
+			for (Seat rem : toRemove) {
+				wagersCopy.remove(rem);
+			}
+
+			pots.add(new Pot(lowestTotalWager * contestors.size(), contestors));
+			for (Entry<Seat, Long> wager : wagersCopy.entrySet()) {
+				wagersCopy.put(wager.getKey(), wager.getValue() - lowestTotalWager);
 			}
 		}
 
-		return potsByContestors;
+		return pots;
 	}
 
 }

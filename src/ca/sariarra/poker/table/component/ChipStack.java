@@ -41,4 +41,8 @@ public class ChipStack {
 	public void collect(final long pAmount) {
 		amount += pAmount;
 	}
+
+	public long getTotal() {
+		return amount;
+	}
 }
