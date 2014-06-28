@@ -2,13 +2,13 @@ package ca.sariarra.util;
 
 public class ParamUtil {
 
-	public static void ensureNotNull(String pName, Object param) {
+	public static void notNull(String pName, Object param) {
 		if (param == null) {
 			throw new IllegalArgumentException(pName + " must not be null.");
 		}
 	}
 	
-	public static void ensureNotNullOrEmpty(String pName, Object[] arr) {
+	public static void notNullOrEmpty(String pName, Object[] arr) {
 		if (arr == null) {
 			throw new IllegalArgumentException(pName + " must not be null.");
 		}

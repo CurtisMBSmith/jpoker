@@ -1,6 +1,6 @@
 package ca.sariarra.poker.logic;
 
-import static ca.sariarra.util.ParamUtil.ensureNotNullOrEmpty;
+import static ca.sariarra.util.ParamUtil.notNullOrEmpty;
 
 import java.util.Arrays;
 import java.util.List;
@@ -13,7 +13,7 @@ public class BlindLevels {
 	private final long msInterval;
 
 	public BlindLevels(final long interval, final BlindLevel... pLevels) {
-		ensureNotNullOrEmpty("pLevels", pLevels);
+		notNullOrEmpty("pLevels", pLevels);
 
 		levels = Arrays.asList(pLevels);
 		msInterval = interval;

@@ -1,5 +1,6 @@
 package ca.sariarra.poker.datastruct;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -111,8 +112,33 @@ public class Pot {
 	}
 
 	public Map<Long, List<Seat>> groupPotsByContestors() {
-		// TODO Auto-generated method stub
-		return null;
+		Map<Long, List<Seat>> potsByContestors = new HashMap<Long, List<Seat>>();
+
+		Long lowestTotalWager;
+		List<Seat> contestors;
+		while (!wagers.isEmpty()) {
+			lowestTotalWager = null;
+			contestors = new ArrayList<Seat>();
+
+			for (Entry<Seat, Long> wager : wagers.entrySet()) {
+				if (wager.getKey().isFolded() || wager.getValue() == 0) {
+					wagers.remove(wager.getKey());
+					continue;
+				}
+
+				if (lowestTotalWager == null || lowestTotalWager > wager.getValue()) {
+					lowestTotalWager = wager.getValue();
+					contestors.add(wager.getKey());
+				}
+			}
+
+			potsByContestors.put(lowestTotalWager, contestors);
+			for (Entry<Seat, Long> wager : wagers.entrySet()) {
+				wagers.put(wager.getKey(), wager.getValue() - lowestTotalWager);
+			}
+		}
+
+		return potsByContestors;
 	}
 
 }

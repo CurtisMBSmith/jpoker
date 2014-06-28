@@ -1,6 +1,6 @@
 package ca.sariarra.poker.datastruct;
 
-import static ca.sariarra.util.ParamUtil.ensureNotNull;
+import static ca.sariarra.util.ParamUtil.notNull;
 import ca.sariarra.poker.types.Rank;
 import ca.sariarra.poker.types.Suit;
 
@@ -10,9 +10,9 @@ public class Card implements Comparable<Card> {
 	private Deck parentDeck;
 
 	public Card(Rank aRank, Suit aSuit, Deck parent) {
-		ensureNotNull("Rank", aRank);
-		ensureNotNull("Suit", aSuit);
-		ensureNotNull("Parent Deck", parent);
+		notNull("Rank", aRank);
+		notNull("Suit", aSuit);
+		notNull("Parent Deck", parent);
 		
 		rank = aRank;
 		suit = aSuit;
@@ -20,8 +20,8 @@ public class Card implements Comparable<Card> {
 	}
 	
 	public Card(Rank aRank, Suit aSuit) {
-		ensureNotNull("Rank", aRank);
-		ensureNotNull("Suit", aSuit);
+		notNull("Rank", aRank);
+		notNull("Suit", aSuit);
 		
 		rank = aRank;
 		suit = aSuit;

@@ -1,6 +1,6 @@
 package ca.sariarra.poker.datastruct;
 
-import static ca.sariarra.util.ParamUtil.ensureNotNull;
+import static ca.sariarra.util.ParamUtil.notNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,7 @@ public class Seat {
 	private boolean sittingOut;
 
 	public Seat(final Player p) {
-		ensureNotNull("Player", p);
+		notNull("Player", p);
 		player = p;
 		sittingOut = true;
 	}

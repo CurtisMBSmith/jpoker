@@ -1,6 +1,6 @@
 package ca.sariarra.poker.logic;
 
-import static ca.sariarra.util.ParamUtil.ensureNotNullOrEmpty;
+import static ca.sariarra.util.ParamUtil.notNullOrEmpty;
 
 import java.util.Arrays;
 import java.util.List;
@@ -11,7 +11,7 @@ public class GameRotation {
 	private final long msInterval;
 
 	public GameRotation(final long interval, final PokerGame... gameList) {
-		ensureNotNullOrEmpty("gameList", gameList);
+		notNullOrEmpty("gameList", gameList);
 
 		games = Arrays.asList(gameList);
 		msInterval = interval;
