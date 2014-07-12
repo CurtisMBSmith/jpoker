@@ -79,6 +79,10 @@ public class Hand {
 		return result;
 	}
 
+	public List<Card> getHoleCards() {
+		return holeCards;
+	}
+
 	public HandRank getRanking() {
 		return ranking;
 	}

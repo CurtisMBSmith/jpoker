@@ -21,6 +21,10 @@ public class ChipStack {
 		return amount == 0;
 	}
 
+	public boolean pennyBase() {
+		return allowPennies;
+	}
+
 	public long removeChips(final long pAmount)  {
 		long res;
 

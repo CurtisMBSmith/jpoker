@@ -22,6 +22,7 @@ import ca.sariarra.poker.player.actions.AvailableActions;
 import ca.sariarra.poker.player.actions.PlayerAction;
 import ca.sariarra.poker.table.component.BlindLevel;
 import ca.sariarra.poker.table.component.Deck;
+import ca.sariarra.poker.table.component.HandActionLog;
 import ca.sariarra.poker.table.component.Pot;
 import ca.sariarra.poker.table.component.PotManager;
 import ca.sariarra.poker.table.component.Seat;
@@ -44,8 +45,11 @@ public abstract class Table implements Runnable {
 	private boolean closed;
 	protected int button;
 	private final PokerGame game;
+	private HandAction currentHandPhase;
 
 	private Date handStart;
+
+	private HandActionLog handActionLog;
 
 	public Table(final int numSeats, final boolean pIsCashTable, final PokerGame pGame, final long pTableNum) {
 		if (numSeats <= 0) {
@@ -64,6 +68,7 @@ public abstract class Table implements Runnable {
 		breakTime = 0;
 		deck = new Deck();
 		communityCards = new ArrayList<Card>(5);
+		currentHandPhase = null;
 	}
 
 	@Override
@@ -148,6 +153,8 @@ public abstract class Table implements Runnable {
 				seats[i] = null;
 			}
 		}
+
+		currentHandPhase = null;
 	}
 
 	private void setUpTableForNewHand() {
@@ -166,12 +173,15 @@ public abstract class Table implements Runnable {
 
 	private void runHand(final HandAction[] handActions) {
 		for (HandAction action : handActions) {
+			currentHandPhase = action;
+
 			if (action == SHOWDOWN) {
 				break;
 			}
 
 			action.execute(this);
 			if (!isHandContested()) {
+				currentHandPhase = SHOWDOWN;
 				break;
 			}
 		}
@@ -415,10 +425,10 @@ public abstract class Table implements Runnable {
 			while (!actions.validate(pAction)) {
 				if (System.currentTimeMillis() - turnStart > TURN_TIMEOUT) {
 					if (pot.hasUncalledBet()) {
-						pAction = new Action(FOLD);
+						pAction = new Action(seatTurn.getPlayer(), FOLD);
 					}
 					else {
-						pAction = new Action(CHECK);
+						pAction = new Action(seatTurn.getPlayer(), CHECK);
 					}
 
 					break;
@@ -499,5 +509,20 @@ public abstract class Table implements Runnable {
 		return waitList;
 	}
 
+	public Seat[] getSeats() {
+		return seats;
+	}
 
+	public HandAction getHandPhase() {
+		return currentHandPhase;
+	}
+
+	public List<Pot> getCurrentPots() {
+		return pot.groupPotsByContestors();
+	}
+
+	public HandActionLog getHandActionLog() {
+		// TODO Auto-generated method stub
+		return handActionLog;
+	}
 }
