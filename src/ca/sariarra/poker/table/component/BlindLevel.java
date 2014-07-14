@@ -23,4 +23,33 @@ public class BlindLevel {
 		return ante;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+
+		if (smallBlind > 0) {
+			sb.append("Small blind: ");
+			sb.append(smallBlind);
+		}
+
+		if (bigBlind > 0) {
+			if (sb.length() > 0) {
+				sb.append(", ");
+			}
+
+			sb.append("Big blind: ");
+			sb.append(bigBlind);
+		}
+
+		if (ante > 0) {
+			if (sb.length() > 0) {
+				sb.append(", ");
+			}
+
+			sb.append("Ante: ");
+			sb.append(ante);
+		}
+
+		return sb.toString();
+	}
 }

@@ -17,7 +17,6 @@ import java.util.List;
 import org.junit.Test;
 
 import ca.sariarra.poker.card.Card;
-import ca.sariarra.poker.game.handrank.HandRank;
 
 public class TestPositiveHandRankings extends AbstractHandRankTest {
 
@@ -186,6 +185,13 @@ public class TestPositiveHandRankings extends AbstractHandRankTest {
 		assertNotNull("Failed to find expected pair.", rank);
 
 		expectedRank = new HandRank(PAIR, makeCardsFromStrings("7d", "7c", "Ad", "Js", "Th"));
+		assertTrue("Hand rank " + rank.toString() + " was not what was expected (" + expectedRank.toString() + ")", expectedRank.equals(rank));
+
+		testHand = makeCardsFromStrings("Ac", "Kh", "Td", "9c", "4s", "Ah", "3d");
+		rank = PAIR.rankHand(testHand);
+		assertNotNull("Failed to rank hand.", rank);
+
+		expectedRank = new HandRank(PAIR, makeCardsFromStrings("Ah", "Ac", "Kh", "Td", "9c"));
 		assertTrue("Hand rank " + rank.toString() + " was not what was expected (" + expectedRank.toString() + ")", expectedRank.equals(rank));
 	}
 

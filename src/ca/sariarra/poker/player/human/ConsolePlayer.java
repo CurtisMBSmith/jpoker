@@ -13,15 +13,17 @@ import java.util.List;
 
 import ca.sariarra.poker.card.Card;
 import ca.sariarra.poker.player.Player;
-import ca.sariarra.poker.player.actions.Action;
 import ca.sariarra.poker.player.actions.AvailableActions;
 import ca.sariarra.poker.player.actions.PlayerAction;
+import ca.sariarra.poker.player.actions.StandardAction;
 import ca.sariarra.poker.view.table.TableView;
 
 public class ConsolePlayer extends Player {
+	private final BufferedReader br;
 
-	public ConsolePlayer(final String name) {
+	public ConsolePlayer(final BufferedReader br, final String name) {
 		super(name);
+		this.br = br;
 	}
 
 	@Override
@@ -31,7 +33,7 @@ public class ConsolePlayer extends Player {
 	}
 
 	@Override
-	public Action doAction(final AvailableActions availableActions) {
+	public StandardAction doAction(final AvailableActions availableActions) {
 		PlayerAction[] actions = availableActions.getActions();
 		System.out.print("It's your turn, please select an action: ");
 		for (int i = 0; i < actions.length; i++) {
@@ -43,7 +45,7 @@ public class ConsolePlayer extends Player {
 		}
 
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		Action result = null;
+		StandardAction result = null;
 		while (result == null) {
 
 			try {
@@ -86,8 +88,8 @@ public class ConsolePlayer extends Player {
 		return result;
 	}
 
-	private Action decodeInputToAction(final String input) {
-		Action result = null;
+	private StandardAction decodeInputToAction(final String input) {
+		StandardAction result = null;
 
 		String[] inputSp = input.split(" ");
 		if (inputSp.length == 0) {
@@ -96,25 +98,25 @@ public class ConsolePlayer extends Player {
 
 		// Decode the string to an action.
 		if (inputSp[0].equalsIgnoreCase("BET") || inputSp[0].equalsIgnoreCase("B")) {
-			result = new Action(this, BET);
+			result = new StandardAction(this, BET);
 			if (inputSp.length > 1) {
 				result.setBetAmount(decodeInputToBetAmount(inputSp[1]));
 			}
 		}
 		else if (inputSp[0].equalsIgnoreCase("RAISE") || inputSp[0].equalsIgnoreCase("R")) {
-			result = new Action(this, RAISE);
+			result = new StandardAction(this, RAISE);
 			if (inputSp.length > 1) {
 				result.setBetAmount(decodeInputToBetAmount(inputSp[1]));
 			}
 		}
 		else if (inputSp[0].equalsIgnoreCase("CHECK") || inputSp[0].equalsIgnoreCase("CH")) {
-			result = new Action(this, CHECK);
+			result = new StandardAction(this, CHECK);
 		}
 		else if (inputSp[0].equalsIgnoreCase("CALL") || inputSp[0].equalsIgnoreCase("CA")) {
-			result = new Action(this, CALL);
+			result = new StandardAction(this, CALL);
 		}
 		else if (inputSp[0].equalsIgnoreCase("FOLD") || inputSp[0].equalsIgnoreCase("F")) {
-			result = new Action(this, FOLD);
+			result = new StandardAction(this, FOLD);
 			result.setFoldConfirm(true);
 		}
 
@@ -124,6 +126,11 @@ public class ConsolePlayer extends Player {
 	@Override
 	public void updateTableView(final TableView view) {
 		System.out.println(view.toString());
+		try {
+			br.readLine();
+		} catch (IOException e) {
+			throw new RuntimeException("IOException while reading from System.in", e);
+		}
 	}
 
 }

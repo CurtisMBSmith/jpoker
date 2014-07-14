@@ -90,4 +90,40 @@ public class Hand {
 	public void setRanking(final HandRank rank) {
 		ranking = rank;
 	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+
+		if (holeCards.size() > 0) {
+			sb.append('[');
+			for (int i = 0; i < holeCards.size(); i++) {
+				if (i > 0) {
+					sb.append(", ");
+				}
+				sb.append(holeCards.get(i).toString());
+			}
+			sb.append(']');
+		}
+
+		if (exposedCards.size() > 0) {
+			if (sb.length() > 0) {
+				sb.append(' ');
+			}
+
+			for (int i = 0; i < holeCards.size(); i++) {
+				if (i > 0) {
+					sb.append(", ");
+				}
+				sb.append(holeCards.get(i).toString());
+			}
+		}
+
+		if (ranking != null) {
+			sb.append(" a ");
+			sb.append(ranking.toString());
+		}
+
+		return sb.toString();
+	}
 }

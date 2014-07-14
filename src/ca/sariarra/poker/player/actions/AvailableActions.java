@@ -50,7 +50,7 @@ public class AvailableActions {
 		return errorInPreviousAction;
 	}
 
-	public boolean validate(final Action pAction) {
+	public boolean validate(final StandardAction pAction) {
 		if (!actionSet.contains(pAction.getAction())) {
 			errorInPreviousAction = "Action " + pAction.getAction() + " is not valid.";
 		}

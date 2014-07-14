@@ -8,8 +8,8 @@ import java.util.List;
 import ca.sariarra.poker.card.Card;
 import ca.sariarra.poker.game.handrank.HandRank;
 import ca.sariarra.poker.player.Player;
-import ca.sariarra.poker.player.actions.Action;
 import ca.sariarra.poker.player.actions.AvailableActions;
+import ca.sariarra.poker.player.actions.StandardAction;
 import ca.sariarra.poker.view.table.TableView;
 
 public class Seat {
@@ -84,7 +84,7 @@ public class Seat {
 		return chipStack.removeChips(amount);
 	}
 
-	public Action getPlayerAction(final AvailableActions actions) {
+	public StandardAction getPlayerAction(final AvailableActions actions) {
 		return player.doAction(actions);
 	}
 

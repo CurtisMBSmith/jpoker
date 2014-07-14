@@ -6,12 +6,13 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import ca.sariarra.poker.card.Card;
 import ca.sariarra.poker.game.action.HandAction;
 import ca.sariarra.poker.player.Player;
 import ca.sariarra.poker.table.Table;
+import ca.sariarra.poker.table.component.HandActionLog;
 import ca.sariarra.poker.table.component.Pot;
-import ca.sariarra.poker.view.table.component.HandActionLogView;
-import ca.sariarra.poker.view.table.component.HandActionLogView.ActionWrapperView;
+import ca.sariarra.poker.view.card.CardView;
 import ca.sariarra.poker.view.table.component.PotView;
 import ca.sariarra.poker.view.table.component.SeatView;
 
@@ -20,10 +21,12 @@ public class TableView {
 	private String tableDesc;
 	private final SeatView[] seats;
 	private final List<PotView> pots;
-	private final HandActionLogView actionLog;
+	private final HandActionLog actionLog;
 	private final HandAction currentAction;
+	private final List<CardView> communityCards;
 
 	public TableView(final Table table, final Player playerView) {
+		tableDesc = table.getDescription();
 		seats = new SeatView[table.getSeats().length];
 		for (int i = 0; i < table.getSeats().length; i++) {
 			if (table.getSeats()[i] == null) {
@@ -60,8 +63,12 @@ public class TableView {
 			}
 		});
 
-		actionLog = new HandActionLogView(table.getHandActionLog());
+		actionLog = table.getHandActionLog();
 		currentAction = table.getHandPhase();
+		communityCards = new ArrayList<CardView>(5);
+		for (Card card : table.getCommunityCards()) {
+			communityCards.add(new CardView(card));
+		}
 	}
 
 	public String getTableDesc() {
@@ -76,7 +83,7 @@ public class TableView {
 		return pots;
 	}
 
-	public HandActionLogView getActionLog() {
+	public HandActionLog getActionLog() {
 		return actionLog;
 	}
 
@@ -103,6 +110,20 @@ public class TableView {
 			sb.append('\n');
 		}
 
+		// Add the community cards.
+		if (communityCards.size() > 0) {
+			sb.append("========================= BOARD =========================\n");
+			for (int i = 0; i < communityCards.size(); i++) {
+				if (i > 0) {
+					sb.append(',');
+					sb.append(' ');
+				}
+				sb.append(communityCards.get(i));
+			}
+
+			sb.append('\n');
+		}
+
 		// Add the pot views.
 		if (pots.size() > 0) {
 			sb.append("========================= POTS ==========================\n");
@@ -119,24 +140,9 @@ public class TableView {
 			}
 		}
 
-
 		// Add the current action.
-		if(currentAction != null) {
-			sb.append("********** " + currentAction.toString() + " **********\n");
-			boolean currentActionFound = false;
-			for (ActionWrapperView action : actionLog.getActions()) {
-				if (action.getHandAction() != null && action.getHandAction() == currentAction) {
-					currentActionFound = true;
-				}
-				else if (action.getHandAction() != null && action.getHandAction() != currentAction) {
-					currentActionFound = false;
-				}
-
-				if (currentActionFound) {
-					sb.append(action.toString());
-					sb.append('\n');
-				}
-			}
+		if(actionLog.getCurrentRoundActions() != null) {
+			sb.append(actionLog.getCurrentRoundActions().toString());
 		}
 
 		return sb.toString();

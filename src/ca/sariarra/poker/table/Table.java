@@ -1,6 +1,9 @@
 package ca.sariarra.poker.table;
 
 import static ca.sariarra.poker.game.action.HandAction.SHOWDOWN;
+import static ca.sariarra.poker.player.actions.ForcedBet.ANTE;
+import static ca.sariarra.poker.player.actions.ForcedBet.BIG_BLIND;
+import static ca.sariarra.poker.player.actions.ForcedBet.SMALL_BLIND;
 import static ca.sariarra.poker.player.actions.PlayerAction.BET;
 import static ca.sariarra.poker.player.actions.PlayerAction.CALL;
 import static ca.sariarra.poker.player.actions.PlayerAction.CHECK;
@@ -17,9 +20,11 @@ import ca.sariarra.poker.game.PokerGame;
 import ca.sariarra.poker.game.action.HandAction;
 import ca.sariarra.poker.game.component.HandDetails;
 import ca.sariarra.poker.player.Player;
-import ca.sariarra.poker.player.actions.Action;
 import ca.sariarra.poker.player.actions.AvailableActions;
 import ca.sariarra.poker.player.actions.PlayerAction;
+import ca.sariarra.poker.player.actions.PostAction;
+import ca.sariarra.poker.player.actions.ShowAction;
+import ca.sariarra.poker.player.actions.StandardAction;
 import ca.sariarra.poker.table.component.BlindLevel;
 import ca.sariarra.poker.table.component.Deck;
 import ca.sariarra.poker.table.component.HandActionLog;
@@ -114,11 +119,20 @@ public abstract class Table implements Runnable {
 	private void resolveHand(final PokerGame game) {
 		List<Seat> winners;
 		List<Pot> potsByContestors = pot.groupPotsByContestors();
+
+		for (Seat seat : seatsForHand) {
+			if (!seat.isFolded()) {
+				handActionLog.appendPlayerAction(new ShowAction(seat));
+			}
+		}
+
 		for (Pot pot : potsByContestors) {
 			winners = game.determineWinners(communityCards, pot.getContestors());
 
 			divideWinningsAmongWinners(pot.getAmount(), winners);
 		}
+
+		updatePlayers();
 	}
 
 	private void divideWinningsAmongWinners(final Long pot, final List<Seat> winners) {
@@ -174,6 +188,9 @@ public abstract class Table implements Runnable {
 		handStart = new Date();
 		moveButton();
 		setSeatsForHand();
+		for (Seat seat : seatsForHand) {
+			seat.resetForHand();
+		}
 		pot.reset(seatsForHand);
 		deck.shuffle();
 	}
@@ -185,6 +202,8 @@ public abstract class Table implements Runnable {
 	protected abstract void setSeatsForHand();
 
 	protected abstract BlindLevel getBlindLevel(Date time);
+
+	public abstract String getDescription();
 
 	private void runHand(final HandAction[] handActions) {
 		handCounter++;
@@ -335,7 +354,10 @@ public abstract class Table implements Runnable {
 
 		for (Seat s : seatsForHand) {
 			pot.add(s, s.bet(ante));
+			handActionLog.appendPlayerAction(new PostAction(s.getPlayer(), ANTE, ante));
 		}
+
+		updatePlayers();
 	}
 
 	public void postSmallBlind() {
@@ -345,6 +367,8 @@ public abstract class Table implements Runnable {
 		}
 
 		pot.add(seatsForHand[0], seatsForHand[0].bet(sb));
+		handActionLog.appendPlayerAction(new PostAction(seatsForHand[0].getPlayer(), SMALL_BLIND, sb));
+		updatePlayers();
 	}
 
 	public void postBigBlind() {
@@ -354,6 +378,8 @@ public abstract class Table implements Runnable {
 		}
 
 		pot.add(seatsForHand[1], seatsForHand[1].bet(bb));
+		handActionLog.appendPlayerAction(new PostAction(seatsForHand[1].getPlayer(), BIG_BLIND, bb));
+		updatePlayers();
 	}
 
 	/**
@@ -375,9 +401,9 @@ public abstract class Table implements Runnable {
 
 		int turn;
 		AvailableActions actions;
-		Action pAction;
+		StandardAction pAction;
 		Seat seatTurn;
-		for (int i = 0; i < seatsForHand.length && pot.hasUncalledBet(); i++) {
+		for (int i = 0; i < seatsForHand.length || pot.hasUncalledBet(); i++) {
 			turn = i % seatsForHand.length;
 			seatTurn = seatsForHand[turn];
 			if (pot.uncalledBettor() == seatTurn) {
@@ -453,10 +479,10 @@ public abstract class Table implements Runnable {
 			while (!actions.validate(pAction)) {
 				if (System.currentTimeMillis() - turnStart > TURN_TIMEOUT) {
 					if (pot.hasUncalledBet()) {
-						pAction = new Action(seatTurn.getPlayer(), FOLD);
+						pAction = new StandardAction(seatTurn.getPlayer(), FOLD);
 					}
 					else {
-						pAction = new Action(seatTurn.getPlayer(), CHECK);
+						pAction = new StandardAction(seatTurn.getPlayer(), CHECK);
 					}
 
 					break;
@@ -470,9 +496,10 @@ public abstract class Table implements Runnable {
 		}
 
 		pot.returnUncalledBet();
+		updatePlayers();
 	}
 
-	private void resolvePlayerAction(final Seat seat, final Action action) {
+	private void resolvePlayerAction(final Seat seat, final StandardAction action) {
 		switch(action.getAction()) {
 		case CHECK:
 			break;
@@ -562,5 +589,9 @@ public abstract class Table implements Runnable {
 
 	public int getHandCounter() {
 		return handCounter;
+	}
+
+	public List<Card> getCommunityCards() {
+		return communityCards;
 	}
 }

@@ -1,6 +1,6 @@
 package ca.sariarra.poker.table.component;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import ca.sariarra.poker.game.action.HandAction;
@@ -8,50 +8,72 @@ import ca.sariarra.poker.player.actions.Action;
 
 public class HandActionLog {
 
-	List<ActionWrapper> actions;
+	List<HandRound> actions;
 
 	public HandActionLog() {
-		actions = new ArrayList<ActionWrapper>();
+		actions = new LinkedList<HandRound>();
 	}
 
-	public void appendPlayerAction(final Action act) {
-		actions.add(new ActionWrapper(act));
+	public HandRound getCurrentRoundActions() {
+		if (actions.size() == 0) {
+			return null;
+		}
+		else {
+			return actions.get(actions.size() - 1);
+		}
+	}
+
+	public void appendPlayerAction(final Action action) {
+		if (actions.size() > 0) {
+			actions.get(actions.size() - 1).addAction(action);
+		}
 	}
 
 	public void appendHandAction(final HandAction act) {
-		actions.add(new ActionWrapper(act));
+		actions.add(new HandRound(act));
 	}
 
-	public List<ActionWrapper> getActions() {
+	public List<HandRound> getActions() {
 		return actions;
 	}
 
-	public class ActionWrapper {
+	public class HandRound {
+		private final HandAction roundAction;
+		private final List<Action> actionsThisRound;
 
-		private final Action action;
-		private final HandAction handAction;
-
-		private ActionWrapper(final Action action) {
-			this.action = action;
-			this.handAction = null;
+		private HandRound(final HandAction act) {
+			roundAction = act;
+			actionsThisRound = new LinkedList<Action>();
 		}
 
-		private ActionWrapper(final HandAction action) {
-			this.action = null;
-			this.handAction = action;
+		private void addAction(final Action action) {
+			actionsThisRound.add(action);
 		}
 
-		public Action getAction() {
-			return action;
+		public List<Action> getActions() {
+			return actionsThisRound;
 		}
 
-		public HandAction getHandAction() {
-			return handAction;
+		public HandAction getRoundAction() {
+			return roundAction;
 		}
 
 		@Override
 		public String toString() {
-			return action != null ? action.toString() : handAction.toString();
+			StringBuilder sb = new StringBuilder();
+
+			sb.append("********** " + roundAction.toString() + " **********\n");
+			for (Action act : actionsThisRound) {
+				sb.append(act.toString());
+				sb.append('\n');
+			}
+
+			return sb.toString();
 		}
+	}
+
+	private class ActionWrapper {
+
+
 	}
 }

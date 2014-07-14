@@ -9,8 +9,8 @@ import java.util.Random;
 
 import ca.sariarra.poker.card.Card;
 import ca.sariarra.poker.player.Player;
-import ca.sariarra.poker.player.actions.Action;
 import ca.sariarra.poker.player.actions.AvailableActions;
+import ca.sariarra.poker.player.actions.StandardAction;
 import ca.sariarra.poker.view.table.TableView;
 import ca.sariarra.poker.view.table.component.SeatView;
 
@@ -32,11 +32,11 @@ public class MrStupid extends Player {
 	}
 
 	@Override
-	public Action doAction(final AvailableActions availableActions) {
+	public StandardAction doAction(final AvailableActions availableActions) {
 		Random rand = new Random();
 
 		int result = rand.nextInt(availableActions.getActions().length);
-		Action act = new Action(this, availableActions.getActions()[result]);
+		StandardAction act = new StandardAction(this, availableActions.getActions()[result]);
 
 		if (act.getAction() == BET || act.getAction() == RAISE) {
 			result = rand.nextInt(availableActions.getMaxRaise() != null

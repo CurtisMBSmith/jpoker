@@ -63,5 +63,10 @@ public class CashTable extends Table {
 		return false;
 	}
 
+	@Override
+	public String getDescription() {
+		return "Cash table";
+	}
+
 
 }

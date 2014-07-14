@@ -1,5 +1,9 @@
 package ca.sariarra.poker;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 import ca.sariarra.poker.game.NoLimitTexasHoldEm;
 import ca.sariarra.poker.player.ai.MrStupid;
 import ca.sariarra.poker.player.human.ConsolePlayer;
@@ -11,6 +15,8 @@ import ca.sariarra.poker.table.component.BlindLevels;
 public class Poker {
 
 	public static void main(final String[] args) throws InterruptedException {
+		BufferedReader br = null;
+		br = new BufferedReader(new InputStreamReader(System.in));
 
 		Table table = new TournamentTable(6, new NoLimitTexasHoldEm(getLevels()), 1l, 1);
 		table.seatPlayer(new MrStupid("Idiot"), 1500l);
@@ -18,9 +24,21 @@ public class Poker {
 		table.seatPlayer(new MrStupid("Moron"), 1500l);
 		table.seatPlayer(new MrStupid("Dimwit"), 1500l);
 		table.seatPlayer(new MrStupid("Buffoon"), 1500l);
-		table.seatPlayer(new ConsolePlayer("Sariarra"), 1500l);
+		table.seatPlayer(new ConsolePlayer(br, "Sariarra"), 1500l);
 
-		table.run();
+		try {
+			table.run();
+		}
+		finally {
+			try {
+				if (br != null) {
+					br.close();
+				}
+			} catch (IOException e) {
+				System.err.println("Failed to close system.in reader.");
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public static BlindLevels getLevels() {

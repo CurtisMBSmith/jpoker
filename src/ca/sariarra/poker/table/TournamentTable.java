@@ -50,12 +50,22 @@ public class TournamentTable extends Table {
 
 	@Override
 	protected void closeHand() {
-		// TODO Auto-generated method stub
-
+		for (int i = 0; i < seats.length; i++) {
+			if (seats[i] != null) {
+				if (seats[i].getChipStack().isEmpty()) {
+					seats[i] = null;
+				}
+			}
+		}
 	}
 
 	@Override
 	protected boolean gameIsOver() {
 		return getHandCounter() > 1;
+	}
+
+	@Override
+	public String getDescription() {
+		return "Tournament table # " + tourneyTableNum + " - Hand # " + getHandCounter();
 	}
 }
