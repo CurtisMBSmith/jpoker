@@ -10,6 +10,7 @@ import ca.sariarra.poker.game.handrank.HandRank;
 import ca.sariarra.poker.player.Player;
 import ca.sariarra.poker.player.actions.Action;
 import ca.sariarra.poker.player.actions.AvailableActions;
+import ca.sariarra.poker.view.table.TableView;
 
 public class Seat {
 	private final Player player;
@@ -22,6 +23,7 @@ public class Seat {
 		player = p;
 		sittingOut = true;
 		hand = new Hand();
+		chipStack = new ChipStack();
 	}
 
 	public void resetForHand() {
@@ -90,7 +92,7 @@ public class Seat {
 		hand.setFolded(true);
 	}
 
-	public void giveWinnings(final long amount) {
+	public void addChips(final long amount) {
 		chipStack.collect(amount);
 	}
 
@@ -126,4 +128,9 @@ public class Seat {
 
 		return sb.toString();
 	}
+
+	public void updateTableState(final TableView tableView) {
+		player.updateTableView(tableView);
+	}
+
 }

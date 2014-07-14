@@ -37,7 +37,7 @@ public class PotView {
 			if (i != 0) {
 				sb.append(", ");
 			}
-			sb.append(contestors.get(0).getPlayerView().toString());
+			sb.append(contestors.get(i).getPlayerView().toString());
 		}
 
 		return sb.toString();

@@ -11,9 +11,9 @@ import ca.sariarra.poker.table.component.Seat;
 public class TournamentTable extends Table {
 	private final int tourneyTableNum;
 
-	public TournamentTable(final int numSeats, final boolean pIsCashTable, final PokerGame pGame,
+	public TournamentTable(final int numSeats, final PokerGame pGame,
 			final long pTableNum, final int pTourneyTableNum) {
-		super(numSeats, pIsCashTable, pGame, pTableNum);
+		super(numSeats, false, pGame, pTableNum);
 
 		tourneyTableNum = pTourneyTableNum;
 	}
@@ -21,23 +21,23 @@ public class TournamentTable extends Table {
 	@Override
 	protected boolean dealNextHand() {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
 	protected void setSeatsForHand() {
 		List<Seat> seatsInHand = new ArrayList<Seat>(10);
 		for (int i = 1; i <= seats.length; i++) {
-			if (seats[button + i % seats.length] == null) {
+			if (seats[(button + i) % seats.length] == null) {
 				continue;
 			}
 
-			if (seats[button + i % seats.length].getPlayer() == null) {
-				seats[button + i % seats.length] = null;
+			if (seats[(button + i) % seats.length].getPlayer() == null) {
+				seats[(button + i) % seats.length] = null;
 				continue;
 			}
 
-			seatsInHand.add(seats[button + i % seats.length]);
+			seatsInHand.add(seats[(button + i) % seats.length]);
 		}
 
 		seatsForHand = seatsInHand.toArray(new Seat[seatsInHand.size()]);
@@ -45,13 +45,17 @@ public class TournamentTable extends Table {
 
 	@Override
 	protected BlindLevel getBlindLevel(final Date time) {
-		// TODO Auto-generated method stub
-		return null;
+		return game.getBlindLevelByElapsedTime(getElapsedGametime());
 	}
 
 	@Override
 	protected void closeHand() {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	protected boolean gameIsOver() {
+		return getHandCounter() > 1;
 	}
 }

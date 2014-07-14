@@ -29,7 +29,7 @@ public class HandActionLogView {
 		private final HandAction handAction;
 
 		private ActionWrapperView(final ActionWrapper actionWrapper) {
-			this.playerAction = new ActionView(actionWrapper.getAction());
+			this.playerAction = actionWrapper.getAction() != null ? new ActionView(actionWrapper.getAction()) : null;
 			this.handAction = actionWrapper.getHandAction();
 		}
 

@@ -14,16 +14,6 @@ public class Action {
 		this.action = action;
 	}
 
-	public Action(final Player player, final PlayerAction action, final long betAmount) {
-		this(player, action);
-		this.betAmount = betAmount;
-	}
-
-	public Action(final Player player, final PlayerAction action, final boolean confirmFold) {
-		this(player, action, 0);
-		this.foldConfirm = confirmFold;
-	}
-
 	public PlayerAction getAction() {
 		return action;
 	}
@@ -42,6 +32,10 @@ public class Action {
 
 	public boolean getFoldConfirm() {
 		return foldConfirm;
+	}
+
+	public void setFoldConfirm(final boolean foldConfirm) {
+		this.foldConfirm = foldConfirm;
 	}
 
 	public Player getPlayer() {

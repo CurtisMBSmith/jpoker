@@ -57,5 +57,11 @@ public class CashTable extends Table {
 
 	}
 
+	@Override
+	protected boolean gameIsOver() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 
 }

@@ -26,6 +26,7 @@ import ca.sariarra.poker.table.component.HandActionLog;
 import ca.sariarra.poker.table.component.Pot;
 import ca.sariarra.poker.table.component.PotManager;
 import ca.sariarra.poker.table.component.Seat;
+import ca.sariarra.poker.view.table.TableView;
 
 public abstract class Table implements Runnable {
 	private static final long SLEEP_DURATION = 3000;
@@ -37,19 +38,20 @@ public abstract class Table implements Runnable {
 	private final List<Player> waitList;
 	private final boolean isCashTable;
 	private final long tableNum;
-	private PotManager pot;
+	private final PotManager pot;
+	private int handCounter;
 
 	private final long tableStart;
 	private final long breakTime;
 	private final long TURN_TIMEOUT = 600000;
 	private boolean closed;
 	protected int button;
-	private final PokerGame game;
+	protected final PokerGame game;
 	private HandAction currentHandPhase;
 
 	private Date handStart;
 
-	private HandActionLog handActionLog;
+	private final HandActionLog handActionLog;
 
 	public Table(final int numSeats, final boolean pIsCashTable, final PokerGame pGame, final long pTableNum) {
 		if (numSeats <= 0) {
@@ -69,11 +71,22 @@ public abstract class Table implements Runnable {
 		deck = new Deck();
 		communityCards = new ArrayList<Card>(5);
 		currentHandPhase = null;
+		handCounter = 0;
+		pot = new PotManager();
+		handActionLog = new HandActionLog();
 	}
 
 	@Override
 	public void run() {
+		for (Seat s : seats) {
+			s.setSittingOut(false);
+		}
+
 		while (!closed) {
+			if (gameIsOver()) {
+				return;
+			}
+
 			if (dealNextHand()) {
 				setUpTableForNewHand();
 
@@ -115,13 +128,13 @@ public abstract class Table implements Runnable {
 
 		long amountForEachPlayer = pot / winners.size();
 		for (Seat winner : winners) {
-			winner.giveWinnings(amountForEachPlayer);
+			winner.addChips(amountForEachPlayer);
 		}
 
 		// If there is any remainder, give it to the first player in the list.
 		long remainder = pot - amountForEachPlayer;
 		if (remainder != 0) {
-			winners.get(0).giveWinnings(remainder);
+			winners.get(0).addChips(remainder);
 		}
 	}
 
@@ -165,6 +178,8 @@ public abstract class Table implements Runnable {
 		deck.shuffle();
 	}
 
+	protected abstract boolean gameIsOver();
+
 	protected abstract boolean dealNextHand();
 
 	protected abstract void setSeatsForHand();
@@ -172,8 +187,12 @@ public abstract class Table implements Runnable {
 	protected abstract BlindLevel getBlindLevel(Date time);
 
 	private void runHand(final HandAction[] handActions) {
+		handCounter++;
+
 		for (HandAction action : handActions) {
 			currentHandPhase = action;
+			handActionLog.appendHandAction(action);
+			updatePlayers();
 
 			if (action == SHOWDOWN) {
 				break;
@@ -182,8 +201,15 @@ public abstract class Table implements Runnable {
 			action.execute(this);
 			if (!isHandContested()) {
 				currentHandPhase = SHOWDOWN;
+				handActionLog.appendHandAction(SHOWDOWN);
 				break;
 			}
+		}
+	}
+
+	private void updatePlayers() {
+		for (Seat seat : seats) {
+			seat.updateTableState(new TableView(this, seat.getPlayer()));
 		}
 	}
 
@@ -198,8 +224,8 @@ public abstract class Table implements Runnable {
 		return stillInHand > 1;
 	}
 
-	public void addPlayer(final Player p) {
-		if (p == null) {
+	public void seatPlayer(final Player player, final long chips) {
+		if (player == null) {
 			throw new IllegalArgumentException("Player must not be null.");
 		}
 
@@ -208,7 +234,9 @@ public abstract class Table implements Runnable {
 		int j = rand.nextInt(seats.length);
 		for (int i = 0; i < seats.length; i++) {
 			if (seats[(i + j) % seats.length] == null) {
-				seats[(i + j) % seats.length] = new Seat(p);
+				Seat seat = new Seat(player);
+				seat.addChips(chips);
+				seats[(i + j) % seats.length] = seat;
 				return;
 			}
 		}
@@ -325,7 +353,7 @@ public abstract class Table implements Runnable {
 			return;
 		}
 
-		pot.add(seatsForHand[0], seatsForHand[0].bet(bb));
+		pot.add(seatsForHand[1], seatsForHand[1].bet(bb));
 	}
 
 	/**
@@ -438,6 +466,7 @@ public abstract class Table implements Runnable {
 			}
 
 			resolvePlayerAction(seatTurn, pAction);
+			updatePlayers();
 		}
 
 		pot.returnUncalledBet();
@@ -456,6 +485,8 @@ public abstract class Table implements Runnable {
 			seat.fold();
 			break;
 		}
+
+		handActionLog.appendPlayerAction(action);
 	}
 
 	public void limitBettingRound(final boolean bigStreet) {
@@ -487,6 +518,10 @@ public abstract class Table implements Runnable {
 
 	public Seat[] getSeatsForHand() {
 		return seatsForHand;
+	}
+
+	public long getElapsedGametime() {
+		return new Date().getTime() - tableStart;
 	}
 
 	/*
@@ -522,7 +557,10 @@ public abstract class Table implements Runnable {
 	}
 
 	public HandActionLog getHandActionLog() {
-		// TODO Auto-generated method stub
 		return handActionLog;
+	}
+
+	public int getHandCounter() {
+		return handCounter;
 	}
 }

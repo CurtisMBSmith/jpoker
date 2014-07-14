@@ -1,7 +1,6 @@
 package ca.sariarra.poker.table.component;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -14,7 +13,7 @@ public class Deck {
 	private List<Card> discards;
 
 	public Deck() {
-		deck = Arrays.asList(new Card[] {
+		Card[] rawCards = new Card[] {
 				new Card(Rank.ACE, Suit.HEARTS, this), new Card(Rank.ACE, Suit.DIAMONDS, this), new Card(Rank.ACE, Suit.CLUBS, this), new Card(Rank.ACE, Suit.SPADES, this),
 				new Card(Rank.KING, Suit.HEARTS, this), new Card(Rank.KING, Suit.DIAMONDS, this), new Card(Rank.KING, Suit.CLUBS, this), new Card(Rank.KING, Suit.SPADES, this),
 				new Card(Rank.QUEEN, Suit.HEARTS, this), new Card(Rank.QUEEN, Suit.DIAMONDS, this), new Card(Rank.QUEEN, Suit.CLUBS, this), new Card(Rank.QUEEN, Suit.SPADES, this),
@@ -28,7 +27,13 @@ public class Deck {
 				new Card(Rank.FOUR, Suit.HEARTS, this), new Card(Rank.FOUR, Suit.DIAMONDS, this), new Card(Rank.FOUR, Suit.CLUBS, this), new Card(Rank.FOUR, Suit.SPADES, this),
 				new Card(Rank.THREE, Suit.HEARTS, this), new Card(Rank.THREE, Suit.DIAMONDS, this), new Card(Rank.THREE, Suit.CLUBS, this), new Card(Rank.THREE, Suit.SPADES, this),
 				new Card(Rank.TWO, Suit.HEARTS, this), new Card(Rank.TWO, Suit.DIAMONDS, this), new Card(Rank.TWO, Suit.CLUBS, this), new Card(Rank.TWO, Suit.SPADES, this),
-		});
+		};
+
+		deck = new ArrayList<Card>(rawCards.length);
+		for (Card c : rawCards) {
+			deck.add(c);
+		}
+
 		discards = new ArrayList<Card>();
 
 		shuffle();
@@ -43,7 +48,7 @@ public class Deck {
 			throw new RuntimeException("The deck is out of cards.");
 		}
 
-		return deck.remove(0);
+		return ((ArrayList<Card>) deck).remove(deck.size() - 1);
 	}
 
 	public void discard(final Card c) {
@@ -66,11 +71,6 @@ public class Deck {
 	}
 
 	private void swapCards(final int startIndex, final int swapIndex) {
-		if (startIndex >= deck.size() || swapIndex >= swapIndex
-				|| startIndex < 0 || swapIndex < 0) {
-			throw new IllegalArgumentException("Start index and swap index must be within the deck bounds.");
-		}
-
 		Card temp = deck.get(swapIndex);
 		deck.set(swapIndex, deck.get(startIndex));
 		deck.set(startIndex, temp);

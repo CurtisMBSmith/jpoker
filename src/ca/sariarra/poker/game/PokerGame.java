@@ -29,7 +29,7 @@ public abstract class PokerGame {
 		this(null, levels, actions, orderedHandRanks);
 	}
 
-	protected PokerGame getGameByElapsedTime(final long elapsedGameTime) {
+	public PokerGame getGameByElapsedTime(final long elapsedGameTime) {
 		if (gameRotation == null) {
 			return this;
 		}
@@ -37,7 +37,7 @@ public abstract class PokerGame {
 		return gameRotation.getGame(elapsedGameTime);
 	}
 
-	protected BlindLevel getBlindLevelByElapsedTime(final long elapsedGameTime) {
+	public BlindLevel getBlindLevelByElapsedTime(final long elapsedGameTime) {
 		return blindLevels.getLevel(elapsedGameTime);
 	}
 

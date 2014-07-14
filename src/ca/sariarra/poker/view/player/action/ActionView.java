@@ -11,9 +11,9 @@ public class ActionView {
 	private final PlayerView player;
 
 	public ActionView(final Action action) {
-		this.action = action.getAction();
-		this.betAmount = action.getBetAmount();
-		this.player = new PlayerView(action.getPlayer());
+		this.action = action != null ? action.getAction() : null;
+		this.betAmount = action != null ? action.getBetAmount() : 0l;
+		this.player = action != null ? new PlayerView(action.getPlayer()) : null;
 	}
 
 	public PlayerAction getAction() {

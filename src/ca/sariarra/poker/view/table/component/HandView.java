@@ -62,16 +62,19 @@ public class HandView {
 			sb.append(' ');
 		}
 
-		sb.append('[');
-		for (int i = 0; i < holeCards.size(); i++) {
-			if (i != 0) {
-				sb.append(", ");
-			}
+		if (exposedCards.size() > 0) {
+			sb.append(' ');
 
-			sb.append(holeCards.get(i).toString());
+			for (int i = 0; i < exposedCards.size(); i++) {
+				if (i != 0) {
+					sb.append(", ");
+				}
+
+				sb.append(exposedCards.get(i).toString());
+			}
 		}
 
-		sb.append(']');
+
 		return sb.toString();
 	}
 }

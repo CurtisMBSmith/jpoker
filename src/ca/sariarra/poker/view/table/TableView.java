@@ -64,6 +64,25 @@ public class TableView {
 		currentAction = table.getHandPhase();
 	}
 
+	public String getTableDesc() {
+		return tableDesc;
+	}
+
+	public SeatView[] getSeats() {
+		return seats;
+	}
+
+	public List<PotView> getPots() {
+		return pots;
+	}
+
+	public HandActionLogView getActionLog() {
+		return actionLog;
+	}
+
+	public HandAction getCurrentAction() {
+		return currentAction;
+	}
 
 	@Override
 	public String toString() {
@@ -74,43 +93,49 @@ public class TableView {
 		sb.append('\n');
 
 		// Add the seat views.
-		sb.append("========================= SEATS =========================");
+		sb.append("========================= SEATS =========================\n");
 		for (int i = 0; i <  seats.length; i++) {
 			sb.append('[');
 			sb.append(i + 1);
 			sb.append(']');
 			sb.append(' ');
 			sb.append(seats[i].toString());
+			sb.append('\n');
 		}
 
 		// Add the pot views.
 		if (pots.size() > 0) {
-			sb.append("========================= POTS ==========================");
+			sb.append("========================= POTS ==========================\n");
 			sb.append("Main pot: ");
 			sb.append(pots.get(0).toString());
+			sb.append('\n');
 			for (int i = 1; i < pots.size(); i++) {
 				sb.append("Side pot ");
 				sb.append(i);
 				sb.append(':');
 				sb.append(' ');
 				sb.append(pots.get(i).toString());
+				sb.append('\n');
 			}
 		}
 
 
 		// Add the current action.
-		sb.append("********** " + currentAction.toString() + " **********");
-		boolean currentActionFound = false;
-		for (ActionWrapperView action : actionLog.getActions()) {
-			if (action.getHandAction() != null && action.getHandAction() == currentAction) {
-				currentActionFound = true;
-			}
-			else if (action.getHandAction() != null && action.getHandAction() != currentAction) {
-				currentActionFound = false;
-			}
+		if(currentAction != null) {
+			sb.append("********** " + currentAction.toString() + " **********\n");
+			boolean currentActionFound = false;
+			for (ActionWrapperView action : actionLog.getActions()) {
+				if (action.getHandAction() != null && action.getHandAction() == currentAction) {
+					currentActionFound = true;
+				}
+				else if (action.getHandAction() != null && action.getHandAction() != currentAction) {
+					currentActionFound = false;
+				}
 
-			if (currentActionFound) {
-				sb.append(action.toString());
+				if (currentActionFound) {
+					sb.append(action.toString());
+					sb.append('\n');
+				}
 			}
 		}
 

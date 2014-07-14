@@ -107,7 +107,7 @@ public class PotManager {
 		}
 
 		if (highWager - secondHighest > 0) {
-			highestBettor.giveWinnings(highWager - secondHighest);
+			highestBettor.addChips(highWager - secondHighest);
 		}
 
 		highestBettor = null;
