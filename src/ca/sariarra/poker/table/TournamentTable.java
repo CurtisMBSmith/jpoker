@@ -25,7 +25,7 @@ public class TournamentTable extends Table {
 	}
 
 	@Override
-	protected void setSeatsForHand() {
+	protected Seat[] setSeatsForHand() {
 		List<Seat> seatsInHand = new ArrayList<Seat>(10);
 		for (int i = 1; i <= seats.length; i++) {
 			if (seats[(button + i) % seats.length] == null) {
@@ -40,7 +40,7 @@ public class TournamentTable extends Table {
 			seatsInHand.add(seats[(button + i) % seats.length]);
 		}
 
-		seatsForHand = seatsInHand.toArray(new Seat[seatsInHand.size()]);
+		return seatsInHand.toArray(new Seat[seatsInHand.size()]);
 	}
 
 	@Override
@@ -61,11 +61,22 @@ public class TournamentTable extends Table {
 
 	@Override
 	protected boolean gameIsOver() {
-		return getHandCounter() > 1;
+		return getNumberOfPlayersOnTable() <= 1;
 	}
 
 	@Override
 	public String getDescription() {
 		return "Tournament table # " + tourneyTableNum + " - Hand # " + getHandCounter();
+	}
+
+	@Override
+	public void moveButton() {
+		for (int i = 1; i < seats.length; i++) {
+			if (seats[(button + i) % seats.length] == null) {
+				continue;
+			}
+			button = (button + i) % seats.length;
+			break;
+		}
 	}
 }

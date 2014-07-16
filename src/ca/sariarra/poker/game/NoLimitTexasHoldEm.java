@@ -66,6 +66,15 @@ public class NoLimitTexasHoldEm extends PokerGame {
 				continue;
 			}
 
+			// TODO If the hand ends before the actual showdown (ie. all players
+			// have folded except one), this logic will still try to rank the
+			// hand even if there are insufficient cards to do so. This will
+			// require a refactor to fix properly, so this is just a patch for now.
+			if (communityCards.size() < 5) {
+				currentWinners.add(s);
+				continue;
+			}
+
 			if (s.getHandRanking() != null) {
 				rank = s.getHandRanking();
 			}

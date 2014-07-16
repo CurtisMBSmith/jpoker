@@ -24,7 +24,7 @@ public class CashTable extends Table {
 	}
 
 	@Override
-	protected void setSeatsForHand() {
+	protected Seat[] setSeatsForHand() {
 		List<Seat> seatsInHand = new ArrayList<Seat>(10);
 		for (int i = 1; i <= seats.length; i++) {
 			if (seats[button + i % seats.length] == null) {
@@ -43,7 +43,7 @@ public class CashTable extends Table {
 			seatsInHand.add(seats[button + i % seats.length]);
 		}
 
-		seatsForHand = seatsInHand.toArray(new Seat[seatsInHand.size()]);
+		return seatsInHand.toArray(new Seat[seatsInHand.size()]);
 	}
 
 	@Override
@@ -66,6 +66,12 @@ public class CashTable extends Table {
 	@Override
 	public String getDescription() {
 		return "Cash table";
+	}
+
+	@Override
+	public void moveButton() {
+		// TODO Auto-generated method stub
+
 	}
 
 

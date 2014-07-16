@@ -1,13 +1,13 @@
 package ca.sariarra.poker.game.action;
 
-import ca.sariarra.poker.table.Table;
+import ca.sariarra.poker.table.component.HandOfPlay;
 
 public interface HandActionExecutor {
 
 	/**
 	 * Executes the hand action on the table.
 	 *
-	 * @param table The poker table.
+	 * @param handOfPlay The poker table.
 	 */
-	public void execute(Table table);
+	public void execute(HandOfPlay handOfPlay);
 }

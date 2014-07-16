@@ -33,7 +33,8 @@ public class TableView {
 				continue;
 			}
 
-			if (table.getHandPhase() == SHOWDOWN) {
+			// TODO - Extract HandOfPlayView
+			if (table.getCurrentHand().getPhase() == SHOWDOWN) {
 				seats[i] = new SeatView(table.getSeats()[i], true);
 			}
 			else {
@@ -42,7 +43,7 @@ public class TableView {
 		}
 
 		pots = new ArrayList<PotView>(4);
-		for (Pot pot : table.getCurrentPots()) {
+		for (Pot pot : table.getCurrentHand().getCurrentPots()) {
 			pots.add(new PotView(pot));
 		}
 
@@ -63,10 +64,10 @@ public class TableView {
 			}
 		});
 
-		actionLog = table.getHandActionLog();
-		currentAction = table.getHandPhase();
+		actionLog = table.getCurrentHand().getHandActionLog();
+		currentAction = table.getCurrentHand().getPhase();
 		communityCards = new ArrayList<CardView>(5);
-		for (Card card : table.getCommunityCards()) {
+		for (Card card : table.getCurrentHand().getCommunityCards()) {
 			communityCards.add(new CardView(card));
 		}
 	}
@@ -102,11 +103,19 @@ public class TableView {
 		// Add the seat views.
 		sb.append("========================= SEATS =========================\n");
 		for (int i = 0; i <  seats.length; i++) {
-			sb.append('[');
-			sb.append(i + 1);
-			sb.append(']');
-			sb.append(' ');
-			sb.append(seats[i].toString());
+			if (seats[i] == null) {
+				sb.append('[');
+				sb.append(i + 1);
+				sb.append(']');
+				sb.append("*** EMPTY ***");
+			}
+			else {
+				sb.append('[');
+				sb.append(i + 1);
+				sb.append(']');
+				sb.append(' ');
+				sb.append(seats[i].toString());
+			}
 			sb.append('\n');
 		}
 

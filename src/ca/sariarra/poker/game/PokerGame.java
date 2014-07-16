@@ -1,5 +1,6 @@
 package ca.sariarra.poker.game;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ca.sariarra.poker.card.Card;
@@ -55,14 +56,26 @@ public abstract class PokerGame {
 
 	public HandRank rankHand(final List<Card> hand) {
 		HandRank result = null;
+		List<Card> handCopy;
 		for (HandRanking rank : orderedHandRanks) {
-			result = rank.rankHand(hand);
+			handCopy = copyHand(hand);
+
+			result = rank.rankHand(handCopy);
 			if (result != null) {
 				break;
 			}
 		}
 
 		return result;
+	}
+
+	private List<Card> copyHand(final List<Card> hand) {
+		List<Card> handCopy = new ArrayList<Card>(hand.size());
+		for (Card card : hand) {
+			handCopy.add(card);
+		}
+
+		return handCopy;
 	}
 
 	public abstract List<Seat> determineWinners(List<Card> communityCards, List<Seat> contenders);

@@ -60,6 +60,13 @@ public class TestPositiveHandRankings extends AbstractHandRankTest {
 
 		expectedRank = new HandRank(STRAIGHT, makeCardsFromStrings("7d", "8d", "9d", "Td", "Jh"));
 		assertTrue("Hand rank " + rank.toString() + " was not what was expected (" + expectedRank.toString() + ")", expectedRank.equals(rank));
+
+		testHand = makeCardsFromStrings("Ac", "4d", "2d", "Qd", "Jd", "3h", "5s");
+		rank = STRAIGHT.rankHand(testHand);
+		assertNotNull("Failed to find expected straight.", rank);
+
+		expectedRank = new HandRank(STRAIGHT, makeCardsFromStrings("Ac", "2d", "3h", "4d", "5s"));
+		assertTrue("Hand rank " + rank.toString() + " was not what was expected (" + expectedRank.toString() + ")", expectedRank.equals(rank));
 	}
 
 	@Test

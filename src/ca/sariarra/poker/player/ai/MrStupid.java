@@ -54,6 +54,10 @@ public class MrStupid extends Player {
 	@Override
 	public void updateTableView(final TableView view) {
 		for (SeatView seat : view.getSeats()) {
+			if (seat == null) {
+				continue;
+			}
+
 			if (seat.getPlayerView().getName().equals(getName())) {
 				currentChips = seat.getChipStack().getTotalChips();
 			}
