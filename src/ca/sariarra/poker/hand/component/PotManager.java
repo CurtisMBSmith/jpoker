@@ -1,4 +1,4 @@
-package ca.sariarra.poker.hand;
+package ca.sariarra.poker.hand.component;
 
 import java.util.ArrayList;
 import java.util.HashMap;

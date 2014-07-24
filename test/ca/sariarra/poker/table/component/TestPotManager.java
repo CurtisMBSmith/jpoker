@@ -13,8 +13,8 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import ca.sariarra.poker.hand.Pot;
-import ca.sariarra.poker.hand.PotManager;
+import ca.sariarra.poker.hand.component.Pot;
+import ca.sariarra.poker.hand.component.PotManager;
 import ca.sariarra.poker.player.ai.MrStupid;
 
 public class TestPotManager {

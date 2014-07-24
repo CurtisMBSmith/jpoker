@@ -8,8 +8,8 @@ import java.util.List;
 
 import ca.sariarra.poker.card.Card;
 import ca.sariarra.poker.game.action.HandAction;
-import ca.sariarra.poker.hand.HandActionLog;
-import ca.sariarra.poker.hand.Pot;
+import ca.sariarra.poker.hand.component.HandActionLog;
+import ca.sariarra.poker.hand.component.Pot;
 import ca.sariarra.poker.player.Player;
 import ca.sariarra.poker.table.Table;
 import ca.sariarra.poker.view.card.CardView;
