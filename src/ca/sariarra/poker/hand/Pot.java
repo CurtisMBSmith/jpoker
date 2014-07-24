@@ -1,6 +1,8 @@
-package ca.sariarra.poker.table.component;
+package ca.sariarra.poker.hand;
 
 import java.util.List;
+
+import ca.sariarra.poker.table.component.Seat;
 
 public class Pot {
 

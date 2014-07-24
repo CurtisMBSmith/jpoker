@@ -7,9 +7,9 @@ import java.util.Random;
 
 import ca.sariarra.poker.game.PokerGame;
 import ca.sariarra.poker.game.component.HandDetails;
+import ca.sariarra.poker.hand.HandOfPlay;
 import ca.sariarra.poker.player.Player;
 import ca.sariarra.poker.table.component.BlindLevel;
-import ca.sariarra.poker.table.component.HandOfPlay;
 import ca.sariarra.poker.table.component.Seat;
 import ca.sariarra.poker.view.table.TableView;
 

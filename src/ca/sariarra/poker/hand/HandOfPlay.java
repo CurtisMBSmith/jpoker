@@ -1,4 +1,4 @@
-package ca.sariarra.poker.table.component;
+package ca.sariarra.poker.hand;
 
 import static ca.sariarra.poker.game.action.HandAction.SHOWDOWN;
 import static ca.sariarra.poker.player.actions.ForcedBet.ANTE;
@@ -23,6 +23,9 @@ import ca.sariarra.poker.player.actions.PostAction;
 import ca.sariarra.poker.player.actions.ShowAction;
 import ca.sariarra.poker.player.actions.StandardAction;
 import ca.sariarra.poker.table.Table;
+import ca.sariarra.poker.table.component.BlindLevel;
+import ca.sariarra.poker.table.component.Deck;
+import ca.sariarra.poker.table.component.Seat;
 
 public class HandOfPlay implements Runnable {
 

@@ -1,4 +1,4 @@
-package ca.sariarra.poker.table.component;
+package ca.sariarra.poker.hand;
 
 import java.util.LinkedList;
 import java.util.List;

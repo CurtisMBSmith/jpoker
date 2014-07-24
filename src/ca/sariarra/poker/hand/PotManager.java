@@ -1,10 +1,12 @@
-package ca.sariarra.poker.table.component;
+package ca.sariarra.poker.hand;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import ca.sariarra.poker.table.component.Seat;
 
 public class PotManager {
 	private Map<Seat, Long> wagers;

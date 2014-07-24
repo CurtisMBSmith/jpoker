@@ -1,6 +1,6 @@
 package ca.sariarra.poker.game.action;
 
-import ca.sariarra.poker.table.component.HandOfPlay;
+import ca.sariarra.poker.hand.HandOfPlay;
 
 public enum HandAction implements HandActionExecutor {
 
