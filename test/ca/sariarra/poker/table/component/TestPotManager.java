@@ -24,16 +24,15 @@ public class TestPotManager {
 	@Before
 	public void setUp() {
 		seat1 = new Seat(new MrStupid("Stupid1"));
-		seat1.setChips(new ChipStack(false, 10000l));
+		seat1.addChips(10000l);
 
 		seat2 = new Seat(new MrStupid("Stupid2"));
-		seat2.setChips(new ChipStack(false, 10000l));
+		seat2.addChips(10000l);
 
 		seat3 = new Seat(new MrStupid("Stupid3"));
-		seat3.setChips(new ChipStack(false, 4000l));
+		seat3.addChips(4000l);
 
-		pot = new PotManager();
-		pot.reset(new Seat[] {seat1, seat2, seat3});
+		pot = new PotManager(new Seat[] {seat1, seat2, seat3});
 	}
 
 	@Test

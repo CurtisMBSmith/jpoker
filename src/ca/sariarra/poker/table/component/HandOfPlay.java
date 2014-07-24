@@ -40,16 +40,17 @@ public class HandOfPlay implements Runnable {
 	private final BlindLevel level;
 	private final int handNum;
 
-	public HandOfPlay(final Table table, final PokerGame handGame, final HandAction[] handActions,
-			final BlindLevel level, final int handNum) {
+	public HandOfPlay(final Seat[] seatsForHand, final Table table, final PokerGame handGame,
+			final HandAction[] handActions, final BlindLevel level, final int handNum) {
 		deck = new Deck();
 		communityCards = new ArrayList<Card>(5);
 		currentHandPhase = null;
 		handStart = new Date();
-		pot = new PotManager();
+		pot = new PotManager(seatsForHand);
 		this.handGame = handGame;
 		this.handActions = handActions;
 		handActionLog = new HandActionLog();
+		this.seatsForHand = seatsForHand;
 		this.table = table;
 		this.level = level;
 		this.handNum = handNum;
@@ -353,7 +354,10 @@ public class HandOfPlay implements Runnable {
 			table.updatePlayers();
 		}
 
-		pot.returnUncalledBet();
+		if (isHandContested()) {
+			pot.returnUncalledBet();
+		}
+
 		table.updatePlayers();
 	}
 

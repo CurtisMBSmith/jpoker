@@ -10,6 +10,10 @@ public class PotManager {
 	private Map<Seat, Long> wagers;
 	private Seat highestBettor;
 
+	public PotManager(final Seat[] seatsForHand) {
+		reset(seatsForHand);
+	}
+
 	public void reset(final Seat[] seatsForHand) {
 		wagers = new HashMap<Seat, Long>(10);
 		for (Seat s : seatsForHand) {

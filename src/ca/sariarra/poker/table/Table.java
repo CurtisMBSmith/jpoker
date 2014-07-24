@@ -62,7 +62,7 @@ public abstract class Table implements Runnable {
 				Seat[] seatsForHand = setSeatsForHand();
 
 				HandDetails actions = game.getHandDetails(new Date().getTime() - tableStart - breakTime);
-				currentHand = new HandOfPlay(this, actions.getGame(), actions.getActions(), actions.getLevel(), ++handCounter);
+				currentHand = new HandOfPlay(seatsForHand, this, actions.getGame(), actions.getActions(), actions.getLevel(), ++handCounter);
 				currentHand.run();
 				closeHand();
 
