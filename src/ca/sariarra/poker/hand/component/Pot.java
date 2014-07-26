@@ -6,7 +6,7 @@ import ca.sariarra.poker.table.component.Seat;
 
 public class Pot {
 
-	private final long amount;
+	private long amount;
 	private final List<Seat> contestors;
 
 	public Pot(final long amount, final List<Seat> contestors) {
@@ -20,6 +20,10 @@ public class Pot {
 
 	public List<Seat> getContestors() {
 		return contestors;
+	}
+
+	public void addChips(final long amountToAdd) {
+		amount += amountToAdd;
 	}
 
 }

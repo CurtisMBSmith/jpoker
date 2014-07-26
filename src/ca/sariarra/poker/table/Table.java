@@ -84,6 +84,10 @@ public abstract class Table implements Runnable {
 
 	private void resetTableState() {
 		for (Seat seat : seats) {
+			if (seat == null) {
+				continue;
+			}
+
 			seat.resetForHand();
 		}
 

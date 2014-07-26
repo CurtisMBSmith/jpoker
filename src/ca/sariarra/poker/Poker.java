@@ -19,11 +19,11 @@ public class Poker {
 		br = new BufferedReader(new InputStreamReader(System.in));
 
 		Table table = new TournamentTable(6, new NoLimitTexasHoldEm(getLevels()), 1l, 1);
-		table.seatPlayer(new MrStupid("Idiot"), 1500l);
-		table.seatPlayer(new MrStupid("Stupid"), 1500l);
-		table.seatPlayer(new MrStupid("Moron"), 1500l);
-		table.seatPlayer(new MrStupid("Dimwit"), 1500l);
-		table.seatPlayer(new MrStupid("Buffoon"), 1500l);
+		table.seatPlayer(new MrStupid("Tyler"), 1500l);
+		table.seatPlayer(new MrStupid("Sidney"), 1500l);
+		table.seatPlayer(new MrStupid("Alexandre"), 1500l);
+		table.seatPlayer(new MrStupid("Alexei"), 1500l);
+		table.seatPlayer(new MrStupid("Dany"), 1500l);
 		table.seatPlayer(new ConsolePlayer(br, "Sariarra"), 1500l);
 
 		try {

@@ -3,7 +3,6 @@ package ca.sariarra.poker.table.component;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
@@ -41,24 +40,18 @@ public class TestPotManager {
 	public void testAdd() {
 		pot.add(seat1, seat1.bet(1000l));
 		assertEquals("Seat 1 chips not what was expected.", 9000l, seat1.getChips());
-		assertNotNull("Uncalled bettor is null.", pot.uncalledBettor());
-		assertTrue("Seat 1 is not the uncalled bettor.", pot.uncalledBettor() == seat1);
 		assertTrue("Has uncalled bettor is false.", pot.hasUncalledBet());
 		assertEquals("Uncalled bet amount for seat 1 not what was expected.", 0l, pot.getUncalledBet(seat1));
 		assertEquals("Uncalled bet amount for seat 2 not what was expected.", 1000l, pot.getUncalledBet(seat2));
 
 		pot.add(seat2, seat2.bet(1500l));
 		assertEquals("Seat 2 chips not what was expected.", 8500l, seat2.getChips());
-		assertNotNull("Uncalled bettor is null.", pot.uncalledBettor());
-		assertTrue("Seat 2 is not the uncalled bettor.", pot.uncalledBettor() == seat2);
 		assertTrue("Has uncalled bettor is false.", pot.hasUncalledBet());
 		assertEquals("Uncalled bet amount for seat 1 not what was expected.", 500l, pot.getUncalledBet(seat1));
 		assertEquals("Uncalled bet amount for seat 2 not what was expected.", 0l, pot.getUncalledBet(seat2));
 
 		pot.add(seat1, seat1.bet(300l));
 		assertEquals("Seat 1 chips not what was expected.", 8700l, seat1.getChips());
-		assertNotNull("Uncalled bettor is null.", pot.uncalledBettor());
-		assertTrue("Seat 2 is not the uncalled bettor.", pot.uncalledBettor() == seat2);
 		assertTrue("Has uncalled bettor is false.", pot.hasUncalledBet());
 		assertEquals("Uncalled bet amount for seat 1 not what was expected.", 200l, pot.getUncalledBet(seat1));
 		assertEquals("Uncalled bet amount for seat 2 not what was expected.", 0l, pot.getUncalledBet(seat2));
@@ -66,33 +59,28 @@ public class TestPotManager {
 
 	@Test
 	public void testReturnUncalledBet() {
+		seat3.fold();
+
 		pot.add(seat1, seat1.bet(1000l));
 		assertEquals("Seat 1 chips not what was expected.", 9000l, seat1.getChips());
-		assertNotNull("Uncalled bettor is null.", pot.uncalledBettor());
-		assertTrue("Seat 1 is not the uncalled bettor.", pot.uncalledBettor() == seat1);
 		assertTrue("Has uncalled bettor is false.", pot.hasUncalledBet());
 		assertEquals("Uncalled bet amount for seat 1 not what was expected.", 0l, pot.getUncalledBet(seat1));
 		assertEquals("Uncalled bet amount for seat 2 not what was expected.", 1000l, pot.getUncalledBet(seat2));
 
 		pot.add(seat2, seat2.bet(1500l));
 		assertEquals("Seat 2 chips not what was expected.", 8500l, seat2.getChips());
-		assertNotNull("Uncalled bettor is null.", pot.uncalledBettor());
-		assertTrue("Seat 2 is not the uncalled bettor.", pot.uncalledBettor() == seat2);
 		assertTrue("Has uncalled bettor is false.", pot.hasUncalledBet());
 		assertEquals("Uncalled bet amount for seat 1 not what was expected.", 500l, pot.getUncalledBet(seat1));
 		assertEquals("Uncalled bet amount for seat 2 not what was expected.", 0l, pot.getUncalledBet(seat2));
 
 		pot.add(seat1, seat1.bet(300l));
 		assertEquals("Seat 1 chips not what was expected.", 8700l, seat1.getChips());
-		assertNotNull("Uncalled bettor is null.", pot.uncalledBettor());
-		assertTrue("Seat 2 is not the uncalled bettor.", pot.uncalledBettor() == seat2);
 		assertTrue("Has uncalled bettor is false.", pot.hasUncalledBet());
 		assertEquals("Uncalled bet amount for seat 1 not what was expected.", 200l, pot.getUncalledBet(seat1));
 		assertEquals("Uncalled bet amount for seat 2 not what was expected.", 0l, pot.getUncalledBet(seat2));
 
 		pot.returnUncalledBet();
 		assertEquals("Seat 1 chips not what was expected.", 8700l, seat2.getChips());
-		assertNull("Uncalled bettor is not null.", pot.uncalledBettor());
 		assertFalse("Has uncalled bettor is true.", pot.hasUncalledBet());
 		assertEquals("Uncalled bet amount for seat 1 not what was expected.", 0l, pot.getUncalledBet(seat1));
 		assertEquals("Uncalled bet amount for seat 2 not what was expected.", 0l, pot.getUncalledBet(seat2));
@@ -105,8 +93,6 @@ public class TestPotManager {
 
 		pot.add(seat1, seat1.bet(1000l));
 		assertEquals("Seat 1 chips not what was expected.", 9000l, seat1.getChips());
-		assertNotNull("Uncalled bettor is null.", pot.uncalledBettor());
-		assertTrue("Seat 1 is not the uncalled bettor.", pot.uncalledBettor() == seat1);
 		assertTrue("Has uncalled bettor is false.", pot.hasUncalledBet());
 		assertEquals("Uncalled bet amount for seat 1 not what was expected.", 0l, pot.getUncalledBet(seat1));
 		assertEquals("Uncalled bet amount for seat 2 not what was expected.", 1000l, pot.getUncalledBet(seat2));
@@ -119,8 +105,6 @@ public class TestPotManager {
 
 		pot.add(seat2, seat2.bet(1500l));
 		assertEquals("Seat 2 chips not what was expected.", 8500l, seat2.getChips());
-		assertNotNull("Uncalled bettor is null.", pot.uncalledBettor());
-		assertTrue("Seat 2 is not the uncalled bettor.", pot.uncalledBettor() == seat2);
 		assertTrue("Has uncalled bettor is false.", pot.hasUncalledBet());
 		assertEquals("Uncalled bet amount for seat 1 not what was expected.", 500l, pot.getUncalledBet(seat1));
 		assertEquals("Uncalled bet amount for seat 2 not what was expected.", 0l, pot.getUncalledBet(seat2));
@@ -136,8 +120,6 @@ public class TestPotManager {
 		pot.add(seat3, seat3.bet(4500l));
 		assertEquals("Seat 3 chips not what was expected.", 0l, seat3.getChips());
 		assertTrue("Seat 3 is not all in.", seat3.isAllIn());
-		assertNotNull("Uncalled bettor is null.", pot.uncalledBettor());
-		assertTrue("Seat 3 is not the uncalled bettor.", pot.uncalledBettor() == seat3);
 		assertTrue("Has uncalled bettor is false.", pot.hasUncalledBet());
 		assertEquals("Uncalled bet amount for seat 1 not what was expected.", 3000l, pot.getUncalledBet(seat1));
 		assertEquals("Uncalled bet amount for seat 2 not what was expected.", 2500l, pot.getUncalledBet(seat2));
@@ -154,8 +136,6 @@ public class TestPotManager {
 
 		pot.add(seat1, seat1.bet(4000l));
 		assertEquals("Seat 1 chips not what was expected.", 5000l, seat1.getChips());
-		assertNotNull("Uncalled bettor is null.", pot.uncalledBettor());
-		assertTrue("Seat 1 is not the uncalled bettor.", pot.uncalledBettor() == seat1);
 		assertTrue("Has uncalled bettor is false.", pot.hasUncalledBet());
 		assertEquals("Uncalled bet amount for seat 1 not what was expected.", 0l, pot.getUncalledBet(seat1));
 		assertEquals("Uncalled bet amount for seat 2 not what was expected.", 3500l, pot.getUncalledBet(seat2));

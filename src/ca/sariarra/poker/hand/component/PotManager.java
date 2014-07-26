@@ -34,6 +34,10 @@ public class PotManager {
 		}
 
 		// Adjust the highest bettor.
+		adjustHighestBettor();
+	}
+
+	private void adjustHighestBettor() {
 		highestBettor = null;
 		long highestWager = 0;
 		for (Entry<Seat, Long> wager : wagers.entrySet()) {
@@ -49,6 +53,8 @@ public class PotManager {
 	}
 
 	public boolean hasUncalledBet() {
+		adjustHighestBettor();
+
 		if (highestBettor == null) {
 			return false;
 		}
@@ -107,6 +113,10 @@ public class PotManager {
 				continue;
 			}
 
+			if (wager.getKey().isFolded()) {
+				continue;
+			}
+
 			if (wager.getValue() > secondHighest) {
 				secondHighest = wager.getValue();
 			}
@@ -114,9 +124,8 @@ public class PotManager {
 
 		if (highWager - secondHighest > 0) {
 			highestBettor.addChips(highWager - secondHighest);
+			wagers.put(highestBettor, wagers.get(highestBettor) - (highWager - secondHighest));
 		}
-
-		highestBettor = null;
 	}
 
 	public List<Pot> groupPotsByContestors() {
@@ -126,23 +135,32 @@ public class PotManager {
 		Long lowestTotalWager;
 		List<Seat> contestors;
 		List<Seat> toRemove;
+		Pot existing;
+		int totalBettors;
 		while (!wagersCopy.isEmpty()) {
 			lowestTotalWager = null;
 			contestors = new ArrayList<Seat>();
 			toRemove = new ArrayList<Seat>();
+			totalBettors = 0;
 
 			for (Entry<Seat, Long> wager : wagersCopy.entrySet()) {
-				if (wager.getKey().isFolded() || wager.getValue() == 0) {
+				if (wager.getValue() == 0) {
 					toRemove.add(wager.getKey());
 					continue;
 				}
 
 				if (lowestTotalWager == null || lowestTotalWager > wager.getValue()) {
 					lowestTotalWager = wager.getValue();
-					contestors.add(wager.getKey());
+					if (!wager.getKey().isFolded()) {
+						contestors.add(wager.getKey());
+					}
+					totalBettors++;
 				}
 				else if (lowestTotalWager != null && lowestTotalWager <= wager.getValue()) {
-					contestors.add(wager.getKey());
+					if (!wager.getKey().isFolded()) {
+						contestors.add(wager.getKey());
+					}
+					totalBettors++;
 				}
 			}
 
@@ -154,7 +172,14 @@ public class PotManager {
 				wagersCopy.remove(rem);
 			}
 
-			pots.add(new Pot(lowestTotalWager * contestors.size(), contestors));
+			existing = isThereAPotWithSameContestors(pots, contestors);
+			if (existing != null) {
+				existing.addChips(lowestTotalWager * totalBettors);
+			}
+			else {
+				pots.add(new Pot(lowestTotalWager * totalBettors, contestors));
+			}
+
 			for (Entry<Seat, Long> wager : wagersCopy.entrySet()) {
 				wagersCopy.put(wager.getKey(), wager.getValue() - lowestTotalWager);
 			}
@@ -163,4 +188,25 @@ public class PotManager {
 		return pots;
 	}
 
+	public Pot isThereAPotWithSameContestors(final List<Pot> pots, final List<Seat> contestors) {
+		Pot result = null;
+		for (Pot pot : pots) {
+			for (Seat s : pot.getContestors()) {
+				if (!contestors.contains(s)) {
+					continue;
+				}
+			}
+
+			for (Seat s : contestors) {
+				if (!pot.getContestors().contains(s)) {
+					continue;
+				}
+			}
+
+			result = pot;
+			break;
+		}
+
+		return result;
+	}
 }

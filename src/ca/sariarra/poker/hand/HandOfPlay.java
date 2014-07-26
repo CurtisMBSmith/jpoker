@@ -4,11 +4,6 @@ import static ca.sariarra.poker.game.action.HandAction.SHOWDOWN;
 import static ca.sariarra.poker.player.actions.ForcedBet.ANTE;
 import static ca.sariarra.poker.player.actions.ForcedBet.BIG_BLIND;
 import static ca.sariarra.poker.player.actions.ForcedBet.SMALL_BLIND;
-import static ca.sariarra.poker.player.actions.PlayerAction.BET;
-import static ca.sariarra.poker.player.actions.PlayerAction.CALL;
-import static ca.sariarra.poker.player.actions.PlayerAction.CHECK;
-import static ca.sariarra.poker.player.actions.PlayerAction.FOLD;
-import static ca.sariarra.poker.player.actions.PlayerAction.RAISE;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,14 +12,12 @@ import java.util.List;
 import ca.sariarra.poker.card.Card;
 import ca.sariarra.poker.game.PokerGame;
 import ca.sariarra.poker.game.action.HandAction;
+import ca.sariarra.poker.hand.bettinground.NoLimitBettingRound;
 import ca.sariarra.poker.hand.component.HandActionLog;
 import ca.sariarra.poker.hand.component.Pot;
 import ca.sariarra.poker.hand.component.PotManager;
-import ca.sariarra.poker.player.actions.AvailableActions;
-import ca.sariarra.poker.player.actions.PlayerAction;
 import ca.sariarra.poker.player.actions.PostAction;
 import ca.sariarra.poker.player.actions.ShowAction;
-import ca.sariarra.poker.player.actions.StandardAction;
 import ca.sariarra.poker.table.Table;
 import ca.sariarra.poker.table.component.BlindLevel;
 import ca.sariarra.poker.table.component.Deck;
@@ -45,21 +38,23 @@ public class HandOfPlay implements Runnable {
 	private final Table table;
 	private final BlindLevel level;
 	private final int handNum;
+	private int bettingRoundNum;
 
 	public HandOfPlay(final Seat[] seatsForHand, final Table table, final PokerGame handGame,
 			final HandAction[] handActions, final BlindLevel level, final int handNum) {
-		deck = new Deck();
-		communityCards = new ArrayList<Card>(5);
-		currentHandPhase = null;
-		handStart = new Date();
-		pot = new PotManager(seatsForHand);
+		this.deck = new Deck();
+		this.communityCards = new ArrayList<Card>(5);
+		this.currentHandPhase = null;
+		this.handStart = new Date();
+		this.pot = new PotManager(seatsForHand);
 		this.handGame = handGame;
 		this.handActions = handActions;
-		handActionLog = new HandActionLog();
+		this.handActionLog = new HandActionLog();
 		this.seatsForHand = seatsForHand;
 		this.table = table;
 		this.level = level;
 		this.handNum = handNum;
+		this.bettingRoundNum = 0;
 	}
 
 	@Override
@@ -80,6 +75,8 @@ public class HandOfPlay implements Runnable {
 				break;
 			}
 		}
+
+		resolveHand();
 	}
 
 	private boolean isHandContested() {
@@ -226,174 +223,19 @@ public class HandOfPlay implements Runnable {
 		table.updatePlayers();
 	}
 
-	/**
-	 * Initiates a betting round based on the type param.
-	 * Types:
-	 * 	 - 0: No limit
-	 *   - 1: Pot limit
-	 *   - 2: Limit
-	 *   - 3: Limit (big bet street)
-	 *
-	 * @param type The type in range [0,3]
-	 */
-	private void bettingRound(final int type) {
-		if (type < 0 || type > 3) {
-			throw new IllegalArgumentException("Type of betting round must be between 0 and 3");
-		}
-
-		int playersInHandNotAllIn = 0;
-		for (Seat seat : seatsForHand) {
-			if (seat.isFolded() || seat.isAllIn()) {
-				continue;
-			}
-
-			playersInHandNotAllIn++;
-		}
-
-		if (playersInHandNotAllIn <= 1) {
-			return;
-		}
-
-		int turn;
-		AvailableActions actions;
-		StandardAction pAction;
-		Seat seatTurn;
-		int ind = 0;
-		if (pot.hasUncalledBet()) {
-			for (ind = 0; ind < seatsForHand.length; ind++) {
-				if (seatsForHand[ind] == pot.uncalledBettor()) {
-					break;
-				}
-			}
-
-			ind = (ind + 1) % seatsForHand.length;
-		}
-		for (int i = 0 + ind; i < seatsForHand.length + ind || pot.hasUncalledBet(); i++) {
-			turn = i % seatsForHand.length;
-			seatTurn = seatsForHand[turn];
-			if (pot.uncalledBettor() == seatTurn && i + ind >= seatsForHand.length) {
-				break;
-			}
-			if (seatTurn.isFolded()) {
-				continue;
-			}
-
-			if (seatTurn.isAllIn()) {
-				continue;
-			}
-
-			// TODO Lambda-ize?
-			switch(type) {
-			case 0:
-				if (pot.hasUncalledBet()) {
-					actions = new AvailableActions(new PlayerAction[] {CALL, RAISE, FOLD},
-							pot.getUncalledBet(seatTurn), level.getBigBlind(), null);
-				}
-				else {
-					actions = new AvailableActions(new PlayerAction[] {CHECK, BET, FOLD},
-							null, level.getBigBlind(), null);
-				}
-				break;
-			case 1:
-				if (pot.hasUncalledBet()) {
-					actions = new AvailableActions(new PlayerAction[] {CALL, RAISE, FOLD},
-							pot.getUncalledBet(seatTurn), level.getBigBlind(), pot.getSize());
-				}
-				else {
-					actions = new AvailableActions(new PlayerAction[] {CHECK, BET, FOLD},
-							null, level.getBigBlind(), pot.getSize());
-				}
-				break;
-			case 2:
-				if (pot.hasUncalledBet()) {
-					if (i / seatsForHand.length >= 3) {
-						actions = new AvailableActions(new PlayerAction[] {CALL, FOLD},
-								pot.getUncalledBet(seatTurn), null, null);
-					}
-					else {
-						actions = new AvailableActions(new PlayerAction[] {CALL, RAISE, FOLD},
-								pot.getUncalledBet(seatTurn), level.getBigBlind(), level.getBigBlind());
-					}
-				}
-				else {
-					actions = new AvailableActions(new PlayerAction[] {CHECK, BET, FOLD},
-							null, level.getBigBlind(), level.getBigBlind());
-				}
-				break;
-			case 3:
-				if (pot.hasUncalledBet()) {
-					if (i / seatsForHand.length >= 3) {
-						actions = new AvailableActions(new PlayerAction[] {CALL, FOLD},
-								pot.getUncalledBet(seatTurn), null, null);
-					}
-					else {
-						actions = new AvailableActions(new PlayerAction[] {CALL, RAISE, FOLD},
-								pot.getUncalledBet(seatTurn), level.getBigBlind()* 2, level.getBigBlind() * 2);
-					}
-				}
-				else {
-					actions = new AvailableActions(new PlayerAction[] {CHECK, BET, FOLD},
-							null, level.getBigBlind() * 2, level.getBigBlind() * 2);
-				}
-				break;
-			default: throw new RuntimeException("Illegal limit type param. THIS SHOULD NOT HAPPEN.");
-			}
-
-			long turnStart = System.currentTimeMillis();
-			pAction = seatTurn.getPlayerAction(actions);
-			while (!actions.validate(pAction)) {
-				if (System.currentTimeMillis() - turnStart > TURN_TIMEOUT) {
-					if (pot.hasUncalledBet()) {
-						pAction = new StandardAction(seatTurn.getPlayer(), FOLD);
-					}
-					else {
-						pAction = new StandardAction(seatTurn.getPlayer(), CHECK);
-					}
-
-					break;
-				}
-
-				pAction = seatTurn.getPlayerAction(actions);
-			}
-
-			resolvePlayerAction(seatTurn, pAction);
-			table.updatePlayers();
-		}
-
-		if (isHandContested()) {
-			pot.returnUncalledBet();
-		}
-
-		table.updatePlayers();
-	}
-
-	private void resolvePlayerAction(final Seat seat, final StandardAction action) {
-		switch(action.getAction()) {
-		case CHECK:
-			break;
-		case CALL:
-		case RAISE:
-		case BET:
-			pot.add(seat, seat.bet(action.getBetAmount()));
-			break;
-		case FOLD:
-			seat.fold();
-			break;
-		}
-
-		handActionLog.appendPlayerAction(action);
-	}
-
 	public void limitBettingRound(final boolean bigStreet) {
-		bettingRound(bigStreet ? 3 : 2);
+		// TODO
 	}
 
 	public void potLimitBettingRound() {
-		bettingRound(1);
+		// TODO
 	}
 
 	public void noLimitBettingRound() {
-		bettingRound(0);
+		bettingRoundNum++;
+		new NoLimitBettingRound(seatsForHand, pot, handActionLog,
+				level, bettingRoundNum, TURN_TIMEOUT, table).run();
+		pot.returnUncalledBet();
 	}
 
 	public void drawAction(final int drawLimit) {

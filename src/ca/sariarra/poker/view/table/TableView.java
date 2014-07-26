@@ -24,6 +24,7 @@ public class TableView {
 	private final HandActionLog actionLog;
 	private final HandAction currentAction;
 	private final List<CardView> communityCards;
+	private int button;
 
 	public TableView(final Table table, final Player playerView) {
 		tableDesc = table.getDescription();
@@ -39,6 +40,10 @@ public class TableView {
 			}
 			else {
 				seats[i] = new SeatView(table.getSeats()[i], table.getSeats()[i].getPlayer() == playerView);
+			}
+
+			if (table.getSeats()[i] == table.getCurrentHand().getSeatsForHand()[table.getCurrentHand().getSeatsForHand().length - 1]) {
+				button = i;
 			}
 		}
 
@@ -111,7 +116,7 @@ public class TableView {
 			}
 			else {
 				sb.append('[');
-				sb.append(i + 1);
+				sb.append(button == i ? "D" : Integer.toString(i + 1));
 				sb.append(']');
 				sb.append(' ');
 				sb.append(seats[i].toString());
