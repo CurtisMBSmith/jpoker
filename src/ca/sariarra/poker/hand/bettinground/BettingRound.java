@@ -5,6 +5,7 @@ import static ca.sariarra.poker.player.actions.PlayerAction.CHECK;
 import static ca.sariarra.poker.player.actions.PlayerAction.FOLD;
 import static ca.sariarra.poker.player.actions.PlayerAction.RAISE;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -57,6 +58,10 @@ public abstract class BettingRound implements Runnable {
 		AvailableActions actions;
 		StandardAction pAction;
 		while (!playerTurns.isEmpty()) {
+			if (!canMoreThanOnePlayerBet()) {
+				break;
+			}
+
 			currentTurn = playerTurns.remove(0);
 
 			actions = determineAllowableActions(currentTurn);
@@ -65,7 +70,7 @@ public abstract class BettingRound implements Runnable {
 			pAction = currentTurn.getPlayerAction(actions);
 			while (!actions.validate(pAction)) {
 				if (System.currentTimeMillis() - turnStart > TURN_TIMEOUT) {
-					if (potMgr.hasUncalledBet()) {
+					if (potMgr.getUncalledBet(currentTurn) > 0) {
 						pAction = new StandardAction(currentTurn.getPlayer(), FOLD);
 					}
 					else {
@@ -133,4 +138,20 @@ public abstract class BettingRound implements Runnable {
 		}
 	}
 
+	private boolean canMoreThanOnePlayerBet() {
+		List<Seat> playersThatCanStillBet = new ArrayList<Seat>();
+		for (Seat seat : seats) {
+			if (seat.isAllIn()) {
+				continue;
+			}
+
+			if (seat.isFolded()) {
+				continue;
+			}
+
+			playersThatCanStillBet.add(seat);
+		}
+
+		return playersThatCanStillBet.size() > 1;
+	}
 }

@@ -29,7 +29,7 @@ public class NoLimitBettingRound extends BettingRound {
 	@Override
 	public AvailableActions determineAllowableActions(final Seat turn) {
 		AvailableActions actions;
-		if (potMgr.hasUncalledBet()) {
+		if (potMgr.getUncalledBet(turn) > 0) {
 			actions = new AvailableActions(new PlayerAction[] {CALL, RAISE, FOLD},
 					potMgr.getUncalledBet(turn), level.getBigBlind(), null);
 		}

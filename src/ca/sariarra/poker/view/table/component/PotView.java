@@ -17,7 +17,7 @@ public class PotView {
 			this.contestors.add(new SeatView(seat));
 		}
 
-		this.size = pot.getAmount();
+		this.size = pot.getPotSize();
 	}
 
 	public List<SeatView> getContestors() {

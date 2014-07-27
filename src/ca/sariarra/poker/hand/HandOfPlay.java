@@ -46,7 +46,7 @@ public class HandOfPlay implements Runnable {
 		this.communityCards = new ArrayList<Card>(5);
 		this.currentHandPhase = null;
 		this.handStart = new Date();
-		this.pot = new PotManager(seatsForHand);
+		this.pot = new PotManager();
 		this.handGame = handGame;
 		this.handActions = handActions;
 		this.handActionLog = new HandActionLog();
@@ -92,7 +92,7 @@ public class HandOfPlay implements Runnable {
 
 	public void resolveHand() {
 		List<Seat> winners;
-		List<Pot> potsByContestors = pot.groupPotsByContestors();
+		List<Pot> potsByContestors = pot.getPots();
 
 		for (Seat seat : seatsForHand) {
 			if (!seat.isFolded()) {
@@ -103,7 +103,7 @@ public class HandOfPlay implements Runnable {
 		for (Pot pot : potsByContestors) {
 			winners = handGame.determineWinners(communityCards, pot.getContestors());
 
-			divideWinningsAmongWinners(pot.getAmount(), winners);
+			divideWinningsAmongWinners(pot.getPotSize(), winners);
 		}
 
 		table.updatePlayers();
@@ -278,6 +278,6 @@ public class HandOfPlay implements Runnable {
 	}
 
 	public List<Pot> getCurrentPots() {
-		return pot.groupPotsByContestors();
+		return pot.getPots();
 	}
 }

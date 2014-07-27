@@ -1,212 +1,78 @@
 package ca.sariarra.poker.hand.component;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import ca.sariarra.poker.table.component.Seat;
 
 public class PotManager {
-	private Map<Seat, Long> wagers;
-	private Seat highestBettor;
+	private final List<Pot> pots;
 
-	public PotManager(final Seat[] seatsForHand) {
-		reset(seatsForHand);
+	public PotManager() {
+		pots = new ArrayList<Pot>();
+		pots.add(new Pot());
 	}
 
-	public void reset(final Seat[] seatsForHand) {
-		wagers = new HashMap<Seat, Long>(10);
-		for (Seat s : seatsForHand) {
-			wagers.put(s, 0l);
-		}
+	public void add(final Seat seat, long amount) {
+		Pot pot;
+		Pot newPot;
+		for (int i = 0; i < pots.size() && amount > 0; i++) {
+			pot = pots.get(i);
+			newPot = null;
 
-		highestBettor = null;
-	}
-
-	public void add(final Seat seat, final long amount) {
-		if (wagers.containsKey(seat)) {
-			wagers.put(seat, wagers.get(seat) + amount);
-		}
-		else {
-			wagers.put(seat, amount);
-		}
-
-		// Adjust the highest bettor.
-		adjustHighestBettor();
-	}
-
-	private void adjustHighestBettor() {
-		highestBettor = null;
-		long highestWager = 0;
-		for (Entry<Seat, Long> wager : wagers.entrySet()) {
-			if (wager.getKey().isFolded()) {
-				continue;
+			if (pot.isClosed()) {
+				if (pot.getUncalledBet(seat) == 0) {
+					continue;
+				}
+				else {
+					if (pot.getUncalledBet(seat) > amount) {
+						newPot = pot.addChips(amount, seat);
+						pots.add(i, newPot);
+						amount = 0;
+					}
+					else {
+						amount -= pot.getUncalledBet(seat);
+						pot.addChips(pot.getUncalledBet(seat), seat);
+					}
+				}
 			}
+			else {
+				newPot = pot.addChips(amount, seat);
+				amount = 0;
 
-			if (wager.getValue() > highestWager) {
-				highestWager = wager.getValue();
-				highestBettor = wager.getKey();
-			}
-		}
-	}
-
-	public boolean hasUncalledBet() {
-		adjustHighestBettor();
-
-		if (highestBettor == null) {
-			return false;
-		}
-
-		long highestWager = wagers.get(highestBettor);
-		for (Entry<Seat, Long> wager : wagers.entrySet()) {
-			if (wager.getKey().isAllIn()) {
-				continue;
-			}
-			if (wager.getKey().isFolded()) {
-				continue;
-			}
-
-			if (wager.getValue() < highestWager) {
-				return true;
+				// If newPot is not null then the seat was put all in by their
+				// bet, so a new pot will be returned.
+				if (newPot != null) {
+					pots.add(newPot);
+				}
 			}
 		}
-		return false;
-	}
-
-	public Seat uncalledBettor() {
-		return highestBettor;
 	}
 
 	public long getUncalledBet(final Seat seat) {
-		if (highestBettor == null) {
-			return 0;
+		long result = 0;
+		for (Pot pot : pots) {
+			result += pot.getUncalledBet(seat);
 		}
 
-		long highWager = wagers.get(highestBettor);
-		if (!wagers.containsKey(seat)) {
-			return highWager;
-		}
-
-		return highWager - wagers.get(seat);
+		return result;
 	}
 
-	public Long getSize() {
+	public Long getTotalSize() {
 		long size = 0;
-		for (Entry<Seat, Long> wager : wagers.entrySet()) {
-			size += wager.getValue();
+		for (Pot pot : pots) {
+			size += pot.getPotSize();
 		}
 
 		return size;
 	}
 
 	public void returnUncalledBet() {
-		if (!hasUncalledBet()) {
-			return;
-		}
-
-		long highWager = wagers.get(highestBettor);
-		long secondHighest = 0;
-		for (Entry<Seat, Long> wager : wagers.entrySet()) {
-			if (wager.getKey() == highestBettor) {
-				continue;
-			}
-
-			if (wager.getKey().isFolded()) {
-				continue;
-			}
-
-			if (wager.getValue() > secondHighest) {
-				secondHighest = wager.getValue();
-			}
-		}
-
-		if (highWager - secondHighest > 0) {
-			highestBettor.addChips(highWager - secondHighest);
-			wagers.put(highestBettor, wagers.get(highestBettor) - (highWager - secondHighest));
-		}
+		pots.get(pots.size() - 1).returnUncalledBet();
 	}
 
-	public List<Pot> groupPotsByContestors() {
-		Map<Seat, Long> wagersCopy = new HashMap<Seat, Long>(wagers);
-		List<Pot> pots = new ArrayList<Pot>();
-
-		Long lowestTotalWager;
-		List<Seat> contestors;
-		List<Seat> toRemove;
-		Pot existing;
-		int totalBettors;
-		while (!wagersCopy.isEmpty()) {
-			lowestTotalWager = null;
-			contestors = new ArrayList<Seat>();
-			toRemove = new ArrayList<Seat>();
-			totalBettors = 0;
-
-			for (Entry<Seat, Long> wager : wagersCopy.entrySet()) {
-				if (wager.getValue() == 0) {
-					toRemove.add(wager.getKey());
-					continue;
-				}
-
-				if (lowestTotalWager == null || lowestTotalWager > wager.getValue()) {
-					lowestTotalWager = wager.getValue();
-					if (!wager.getKey().isFolded()) {
-						contestors.add(wager.getKey());
-					}
-					totalBettors++;
-				}
-				else if (lowestTotalWager != null && lowestTotalWager <= wager.getValue()) {
-					if (!wager.getKey().isFolded()) {
-						contestors.add(wager.getKey());
-					}
-					totalBettors++;
-				}
-			}
-
-			if (lowestTotalWager == null) {
-				break;
-			}
-
-			for (Seat rem : toRemove) {
-				wagersCopy.remove(rem);
-			}
-
-			existing = isThereAPotWithSameContestors(pots, contestors);
-			if (existing != null) {
-				existing.addChips(lowestTotalWager * totalBettors);
-			}
-			else {
-				pots.add(new Pot(lowestTotalWager * totalBettors, contestors));
-			}
-
-			for (Entry<Seat, Long> wager : wagersCopy.entrySet()) {
-				wagersCopy.put(wager.getKey(), wager.getValue() - lowestTotalWager);
-			}
-		}
-
+	public List<Pot> getPots() {
 		return pots;
 	}
 
-	public Pot isThereAPotWithSameContestors(final List<Pot> pots, final List<Seat> contestors) {
-		Pot result = null;
-		for (Pot pot : pots) {
-			for (Seat s : pot.getContestors()) {
-				if (!contestors.contains(s)) {
-					continue;
-				}
-			}
-
-			for (Seat s : contestors) {
-				if (!pot.getContestors().contains(s)) {
-					continue;
-				}
-			}
-
-			result = pot;
-			break;
-		}
-
-		return result;
-	}
 }
