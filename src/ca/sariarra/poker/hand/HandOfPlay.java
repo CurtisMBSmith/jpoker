@@ -110,6 +110,10 @@ public class HandOfPlay implements Runnable {
 	}
 
 	private void divideWinningsAmongWinners(final Long pot, final List<Seat> winners) {
+		if (pot == 0) {
+			return;
+		}
+
 		if (winners.size() == 0) {
 			throw new RuntimeException("Pot of size " + pot + " being divided between no players.");
 		}
@@ -120,7 +124,7 @@ public class HandOfPlay implements Runnable {
 		}
 
 		// If there is any remainder, give it to the first player in the list.
-		long remainder = pot - amountForEachPlayer;
+		long remainder = pot - (amountForEachPlayer * winners.size());
 		if (remainder != 0) {
 			winners.get(0).addChips(remainder);
 		}

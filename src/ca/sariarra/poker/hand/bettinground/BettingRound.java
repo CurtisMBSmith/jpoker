@@ -58,7 +58,7 @@ public abstract class BettingRound implements Runnable {
 		AvailableActions actions;
 		StandardAction pAction;
 		while (!playerTurns.isEmpty()) {
-			if (!canMoreThanOnePlayerBet()) {
+			if (!canMoreThanOnePlayerBet() && !playersStillNeedToCall()) {
 				break;
 			}
 
@@ -153,5 +153,20 @@ public abstract class BettingRound implements Runnable {
 		}
 
 		return playersThatCanStillBet.size() > 1;
+	}
+
+	private boolean playersStillNeedToCall() {
+		boolean result = false;
+		for (Seat seat : seats) {
+			if (seat.isAllIn() || seat.isFolded()) {
+				continue;
+			}
+
+			if (potMgr.getUncalledBet(seat) > 0) {
+				result = true;
+			}
+		}
+
+		return result;
 	}
 }
