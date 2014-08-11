@@ -4,11 +4,13 @@ public class BlindLevel {
 	private final long bigBlind;
 	private final long smallBlind;
 	private final long ante;
+	private final long duration;
 
-	public BlindLevel(final long bigBlind, final long smallBlind, final long ante) {
+	public BlindLevel(final long bigBlind, final long smallBlind, final long ante, final long duration) {
 		this.bigBlind = bigBlind;
 		this.smallBlind = smallBlind;
 		this.ante = ante;
+		this.duration = duration;
 	}
 
 	public long getBigBlind() {
@@ -21,6 +23,10 @@ public class BlindLevel {
 
 	public long getAnte() {
 		return ante;
+	}
+
+	public long getDuration() {
+		return duration;
 	}
 
 	@Override
