@@ -3,3 +3,5 @@
 bin/*
 syntax: glob
 .settings/org.eclipse.jdt.core.prefs
+target/*
+.settings/org.eclipse.m2e.core.prefs

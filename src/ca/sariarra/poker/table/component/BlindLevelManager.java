@@ -5,12 +5,12 @@ import static ca.sariarra.util.ParamUtil.notNullOrEmpty;
 import java.util.Arrays;
 import java.util.List;
 
-public class BlindLevels {
+public class BlindLevelManager {
 
 	private final List<BlindLevel> levels;
 	private final long msInterval;
 
-	public BlindLevels(final long interval, final BlindLevel... pLevels) {
+	public BlindLevelManager(final long interval, final BlindLevel... pLevels) {
 		notNullOrEmpty("pLevels", pLevels);
 
 		levels = Arrays.asList(pLevels);

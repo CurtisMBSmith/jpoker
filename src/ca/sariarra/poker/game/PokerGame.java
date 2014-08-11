@@ -10,23 +10,23 @@ import ca.sariarra.poker.game.component.HandDetails;
 import ca.sariarra.poker.game.handrank.HandRank;
 import ca.sariarra.poker.game.handrank.HandRanking;
 import ca.sariarra.poker.table.component.BlindLevel;
-import ca.sariarra.poker.table.component.BlindLevels;
+import ca.sariarra.poker.table.component.BlindLevelManager;
 import ca.sariarra.poker.table.component.Seat;
 
 public abstract class PokerGame {
 	private final GameRotation gameRotation;
-	private final BlindLevels blindLevels;
+	private final BlindLevelManager blindLevels;
 	private final HandAction[] handActions;
 	private final HandRanking[] orderedHandRanks;
 
-	protected PokerGame(final GameRotation rotation, final BlindLevels levels, final HandAction[] actions, final HandRanking[] orderedHandRanks) {
+	protected PokerGame(final GameRotation rotation, final BlindLevelManager levels, final HandAction[] actions, final HandRanking[] orderedHandRanks) {
 		gameRotation = rotation;
 		blindLevels = levels;
 		handActions = actions;
 		this.orderedHandRanks = orderedHandRanks;
 	}
 
-	protected PokerGame(final BlindLevels levels, final HandAction[] actions, final HandRanking[] orderedHandRanks) {
+	protected PokerGame(final BlindLevelManager levels, final HandAction[] actions, final HandRanking[] orderedHandRanks) {
 		this(null, levels, actions, orderedHandRanks);
 	}
 

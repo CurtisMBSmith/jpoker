@@ -22,12 +22,12 @@ import ca.sariarra.poker.card.Card;
 import ca.sariarra.poker.game.action.HandAction;
 import ca.sariarra.poker.game.handrank.HandRank;
 import ca.sariarra.poker.game.handrank.HandRanking;
-import ca.sariarra.poker.table.component.BlindLevels;
+import ca.sariarra.poker.table.component.BlindLevelManager;
 import ca.sariarra.poker.table.component.Seat;
 
 public class NoLimitTexasHoldEm extends PokerGame {
 
-	public NoLimitTexasHoldEm(final BlindLevels levels) {
+	public NoLimitTexasHoldEm(final BlindLevelManager levels) {
 		super(levels, new HandAction[] {
 				POST_BLIND_BETS,
 				DEAL_2_HOLE,

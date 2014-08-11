@@ -10,7 +10,7 @@ import ca.sariarra.poker.player.human.ConsolePlayer;
 import ca.sariarra.poker.table.Table;
 import ca.sariarra.poker.table.TournamentTable;
 import ca.sariarra.poker.table.component.BlindLevel;
-import ca.sariarra.poker.table.component.BlindLevels;
+import ca.sariarra.poker.table.component.BlindLevelManager;
 
 public class Poker {
 
@@ -41,8 +41,8 @@ public class Poker {
 		}
 	}
 
-	public static BlindLevels getLevels() {
-		BlindLevels levels = new BlindLevels(90000l, new BlindLevel(20l, 10l, 0l));
+	public static BlindLevelManager getLevels() {
+		BlindLevelManager levels = new BlindLevelManager(90000l, new BlindLevel(20l, 10l, 0l));
 		return levels;
 	}
 }
