@@ -42,7 +42,7 @@ public class Poker {
 	}
 
 	public static BlindLevelManager getLevels() {
-		BlindLevelManager levels = new BlindLevelManager(90000l, new BlindLevel(20l, 10l, 0l, 90000l));
+		BlindLevelManager levels = new BlindLevelManager(90000l, null, null, new BlindLevel(20l, 10l, 0l, 90000l));
 		return levels;
 	}
 }

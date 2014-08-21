@@ -8,17 +8,21 @@ import java.util.List;
 public class BlindLevelManager {
 
 	private final List<BlindLevel> levels;
-	private final long msInterval;
+	private final long levelInterval;
+	private final Long breakInterval;
+	private final Long breakDuration;
 
-	public BlindLevelManager(final long interval, final BlindLevel... levels) {
+	public BlindLevelManager(final long interval, final Long breakInterval, final Long breakDuration, final BlindLevel... levels) {
 		notNullOrEmpty("levels", levels);
 
 		this.levels = Arrays.asList(levels);
-		msInterval = interval;
+		this.levelInterval = interval;
+		this.breakInterval = breakInterval;
+		this.breakDuration = breakDuration;
 	}
 
 	public BlindLevel getLevel(final long elapsedGameTime) {
-		int level = (int) (elapsedGameTime / msInterval);
+		int level = (int) (elapsedGameTime / levelInterval);
 		if (level >= levels.size()) {
 			level = levels.size() - 1;
 		}
@@ -51,5 +55,13 @@ public class BlindLevelManager {
 		else {
 			return levels.get(currentLvlInd + 1);
 		}
+	}
+
+	public Long getBreakInterval() {
+		return breakInterval;
+	}
+
+	public Long getBreakDuration() {
+		return breakDuration;
 	}
 }
