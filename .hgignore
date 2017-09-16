@@ -3,3 +3,4 @@
 bin/*
 syntax: glob
 .settings/org.eclipse.jdt.core.prefs
+.idea
