@@ -1,6 +1,9 @@
 package ca.sariarra.poker.card;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class Card implements Comparable<Card> {
     private final Rank rank;
@@ -47,4 +50,16 @@ public class Card implements Comparable<Card> {
     public int compareTo(Card other) {
 		return rank.compareTo(other.rank());
 	}
+
+    public static List<Card> fromString(String... cards) {
+        return Arrays.stream(cards).map(Card::fromString).collect(Collectors.toList());
+    }
+
+    public static Card fromString(String cardStr) {
+        if (cardStr.length() != 2) {
+            throw new IllegalArgumentException("Card string must be exactly 2 characters");
+        }
+
+        return new Card(Rank.fromChar(cardStr.charAt(0)), Suit.fromChar(cardStr.charAt(1)));
+    }
 }
