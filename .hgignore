@@ -4,3 +4,7 @@ bin/*
 syntax: glob
 .settings/org.eclipse.jdt.core.prefs
 .idea
+build/*
+*.out
+*.ipr
+*.iws
