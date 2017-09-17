@@ -23,10 +23,10 @@ public class CardView {
 
 	@Override
 	public String toString() {
-		return rank.toString() + suit.toString();
-	}
+        return Character.toString(rank.toChar()) + suit.toChar();
+    }
 
 	public String toLongString() {
-		return rank.toLongString() + " of " + suit.toLongString();
-	}
+        return rank.getName() + " of " + suit.getName();
+    }
 }

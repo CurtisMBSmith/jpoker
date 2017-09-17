@@ -1,12 +1,12 @@
 package ca.sariarra.poker.table.component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
 import ca.sariarra.poker.card.Card;
 import ca.sariarra.poker.card.Rank;
 import ca.sariarra.poker.card.Suit;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class Deck {
 	private final List<Card> deck;
@@ -14,20 +14,20 @@ public class Deck {
 
 	public Deck() {
 		Card[] rawCards = new Card[] {
-				new Card(Rank.ACE, Suit.HEARTS, this), new Card(Rank.ACE, Suit.DIAMONDS, this), new Card(Rank.ACE, Suit.CLUBS, this), new Card(Rank.ACE, Suit.SPADES, this),
-				new Card(Rank.KING, Suit.HEARTS, this), new Card(Rank.KING, Suit.DIAMONDS, this), new Card(Rank.KING, Suit.CLUBS, this), new Card(Rank.KING, Suit.SPADES, this),
-				new Card(Rank.QUEEN, Suit.HEARTS, this), new Card(Rank.QUEEN, Suit.DIAMONDS, this), new Card(Rank.QUEEN, Suit.CLUBS, this), new Card(Rank.QUEEN, Suit.SPADES, this),
-				new Card(Rank.JACK, Suit.HEARTS, this), new Card(Rank.JACK, Suit.DIAMONDS, this), new Card(Rank.JACK, Suit.CLUBS, this), new Card(Rank.JACK, Suit.SPADES, this),
-				new Card(Rank.TEN, Suit.HEARTS, this), new Card(Rank.TEN, Suit.DIAMONDS, this), new Card(Rank.TEN, Suit.CLUBS, this), new Card(Rank.TEN, Suit.SPADES, this),
-				new Card(Rank.NINE, Suit.HEARTS, this), new Card(Rank.NINE, Suit.DIAMONDS, this), new Card(Rank.NINE, Suit.CLUBS, this), new Card(Rank.NINE, Suit.SPADES, this),
-				new Card(Rank.EIGHT, Suit.HEARTS, this), new Card(Rank.EIGHT, Suit.DIAMONDS, this), new Card(Rank.EIGHT, Suit.CLUBS, this), new Card(Rank.EIGHT, Suit.SPADES, this),
-				new Card(Rank.SEVEN, Suit.HEARTS, this), new Card(Rank.SEVEN, Suit.DIAMONDS, this), new Card(Rank.SEVEN, Suit.CLUBS, this), new Card(Rank.SEVEN, Suit.SPADES, this),
-				new Card(Rank.SIX, Suit.HEARTS, this), new Card(Rank.SIX, Suit.DIAMONDS, this), new Card(Rank.SIX, Suit.CLUBS, this), new Card(Rank.SIX, Suit.SPADES, this),
-				new Card(Rank.FIVE, Suit.HEARTS, this), new Card(Rank.FIVE, Suit.DIAMONDS, this), new Card(Rank.FIVE, Suit.CLUBS, this), new Card(Rank.FIVE, Suit.SPADES, this),
-				new Card(Rank.FOUR, Suit.HEARTS, this), new Card(Rank.FOUR, Suit.DIAMONDS, this), new Card(Rank.FOUR, Suit.CLUBS, this), new Card(Rank.FOUR, Suit.SPADES, this),
-				new Card(Rank.THREE, Suit.HEARTS, this), new Card(Rank.THREE, Suit.DIAMONDS, this), new Card(Rank.THREE, Suit.CLUBS, this), new Card(Rank.THREE, Suit.SPADES, this),
-				new Card(Rank.TWO, Suit.HEARTS, this), new Card(Rank.TWO, Suit.DIAMONDS, this), new Card(Rank.TWO, Suit.CLUBS, this), new Card(Rank.TWO, Suit.SPADES, this),
-		};
+                new Card(Rank.ACE, Suit.HEARTS), new Card(Rank.ACE, Suit.DIAMONDS), new Card(Rank.ACE, Suit.CLUBS), new Card(Rank.ACE, Suit.SPADES),
+                new Card(Rank.KING, Suit.HEARTS), new Card(Rank.KING, Suit.DIAMONDS), new Card(Rank.KING, Suit.CLUBS), new Card(Rank.KING, Suit.SPADES),
+                new Card(Rank.QUEEN, Suit.HEARTS), new Card(Rank.QUEEN, Suit.DIAMONDS), new Card(Rank.QUEEN, Suit.CLUBS), new Card(Rank.QUEEN, Suit.SPADES),
+                new Card(Rank.JACK, Suit.HEARTS), new Card(Rank.JACK, Suit.DIAMONDS), new Card(Rank.JACK, Suit.CLUBS), new Card(Rank.JACK, Suit.SPADES),
+                new Card(Rank.TEN, Suit.HEARTS), new Card(Rank.TEN, Suit.DIAMONDS), new Card(Rank.TEN, Suit.CLUBS), new Card(Rank.TEN, Suit.SPADES),
+                new Card(Rank.NINE, Suit.HEARTS), new Card(Rank.NINE, Suit.DIAMONDS), new Card(Rank.NINE, Suit.CLUBS), new Card(Rank.NINE, Suit.SPADES),
+                new Card(Rank.EIGHT, Suit.HEARTS), new Card(Rank.EIGHT, Suit.DIAMONDS), new Card(Rank.EIGHT, Suit.CLUBS), new Card(Rank.EIGHT, Suit.SPADES),
+                new Card(Rank.SEVEN, Suit.HEARTS), new Card(Rank.SEVEN, Suit.DIAMONDS), new Card(Rank.SEVEN, Suit.CLUBS), new Card(Rank.SEVEN, Suit.SPADES),
+                new Card(Rank.SIX, Suit.HEARTS), new Card(Rank.SIX, Suit.DIAMONDS), new Card(Rank.SIX, Suit.CLUBS), new Card(Rank.SIX, Suit.SPADES),
+                new Card(Rank.FIVE, Suit.HEARTS), new Card(Rank.FIVE, Suit.DIAMONDS), new Card(Rank.FIVE, Suit.CLUBS), new Card(Rank.FIVE, Suit.SPADES),
+                new Card(Rank.FOUR, Suit.HEARTS), new Card(Rank.FOUR, Suit.DIAMONDS), new Card(Rank.FOUR, Suit.CLUBS), new Card(Rank.FOUR, Suit.SPADES),
+                new Card(Rank.THREE, Suit.HEARTS), new Card(Rank.THREE, Suit.DIAMONDS), new Card(Rank.THREE, Suit.CLUBS), new Card(Rank.THREE, Suit.SPADES),
+                new Card(Rank.TWO, Suit.HEARTS), new Card(Rank.TWO, Suit.DIAMONDS), new Card(Rank.TWO, Suit.CLUBS), new Card(Rank.TWO, Suit.SPADES),
+        };
 
 		deck = new ArrayList<Card>(rawCards.length);
 		for (Card c : rawCards) {
@@ -48,8 +48,8 @@ public class Deck {
 			throw new RuntimeException("The deck is out of cards.");
 		}
 
-		return ((ArrayList<Card>) deck).remove(deck.size() - 1);
-	}
+        return deck.remove(deck.size() - 1);
+    }
 
 	public void discard(final Card c) {
 		discards.add(c);

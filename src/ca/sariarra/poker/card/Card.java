@@ -1,30 +1,18 @@
 package ca.sariarra.poker.card;
 
-import static ca.sariarra.util.ParamUtil.notNull;
-import ca.sariarra.poker.table.component.Deck;
+import java.util.Objects;
 
 public class Card implements Comparable<Card> {
-	private Rank rank;
-	private Suit suit;
-	private Deck parentDeck;
+    private final Rank rank;
+    private final Suit suit;
 
-	public Card(Rank aRank, Suit aSuit, Deck parent) {
-		notNull("Rank", aRank);
-		notNull("Suit", aSuit);
-		notNull("Parent Deck", parent);
-		
-		rank = aRank;
-		suit = aSuit;
-		parentDeck = parent;
-	}
-	
-	public Card(Rank aRank, Suit aSuit) {
-		notNull("Rank", aRank);
-		notNull("Suit", aSuit);
-		
-		rank = aRank;
-		suit = aSuit;
-	}
+    public Card(Rank rank, Suit suit) {
+        Objects.requireNonNull(rank, "Rank must not be null.");
+        Objects.requireNonNull(suit, "Suit must not be null.");
+
+        this.rank = rank;
+        this.suit = suit;
+    }
 	
 	public Rank rank() {
 		return rank;
@@ -35,16 +23,12 @@ public class Card implements Comparable<Card> {
 	}
 	
 	public String toString() {
-		return rank.toString() + suit.toString();
-	}
-	
-	public String toLongString() {
-		return rank.toLongString() + " of " + suit.toLongString();
-	}
-	
-	public void discard() {
-		parentDeck.discard(this);
-	}
+        return Character.toString(rank.toChar()) + suit.toChar();
+    }
+
+    public String description() {
+        return rank.getName() + " of " + suit.getName();
+    }
 	
 	public boolean equals(Object o) {
 		if (o instanceof Card) {
@@ -55,8 +39,12 @@ public class Card implements Comparable<Card> {
 		
 		return false;
 	}
-	
-	public int compareTo(Card other) {
+
+    public int hashCode() {
+        return Integer.hashCode(rank.ordinal()) + Integer.hashCode(suit.ordinal());
+    }
+
+    public int compareTo(Card other) {
 		return rank.compareTo(other.rank());
 	}
 }

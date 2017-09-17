@@ -1,10 +1,10 @@
 package ca.sariarra.poker.table.component;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import ca.sariarra.poker.card.Card;
 import ca.sariarra.poker.game.handrank.HandRank;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Hand {
 	private List<Card> exposedCards;
@@ -21,16 +21,16 @@ public class Hand {
 		for (int i = 0; i < exposedCards.size(); i++) {
 			if (exposedCards.get(i).equals(c)) {
 				Card toDisc = exposedCards.remove(i);
-				toDisc.discard();
-				return toDisc;
+//				toDisc.discard();
+                return toDisc;
 			}
 		}
 
 		for (int i = 0; i < holeCards.size(); i++) {
 			if (holeCards.get(i).equals(c)) {
 				Card toDisc = holeCards.remove(i);
-				toDisc.discard();
-				return toDisc;
+//				toDisc.discard();
+                return toDisc;
 			}
 		}
 
@@ -39,13 +39,13 @@ public class Hand {
 
 	public void resetHand() {
 		for (Card c : exposedCards) {
-			c.discard();
-		}
+//			c.discard();
+        }
 		exposedCards = new ArrayList<Card>(4);
 
 		for (Card c : holeCards) {
-			c.discard();
-		}
+//			c.discard();
+        }
 		holeCards = new ArrayList<Card>(4);
 
 		folded = false;

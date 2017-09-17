@@ -1,14 +1,5 @@
 package ca.sariarra.poker.hand;
 
-import static ca.sariarra.poker.game.action.HandAction.SHOWDOWN;
-import static ca.sariarra.poker.player.actions.ForcedBet.ANTE;
-import static ca.sariarra.poker.player.actions.ForcedBet.BIG_BLIND;
-import static ca.sariarra.poker.player.actions.ForcedBet.SMALL_BLIND;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import ca.sariarra.poker.card.Card;
 import ca.sariarra.poker.game.PokerGame;
 import ca.sariarra.poker.game.action.HandAction;
@@ -22,6 +13,13 @@ import ca.sariarra.poker.table.Table;
 import ca.sariarra.poker.table.component.BlindLevel;
 import ca.sariarra.poker.table.component.Deck;
 import ca.sariarra.poker.table.component.Seat;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static ca.sariarra.poker.game.action.HandAction.SHOWDOWN;
+import static ca.sariarra.poker.player.actions.ForcedBet.*;
 
 public class HandOfPlay implements Runnable {
 
@@ -250,8 +248,8 @@ public class HandOfPlay implements Runnable {
 
 			List<Card> discarded = s.getDiscards(drawLimit);
 			for (Card c : discarded) {
-				c.discard();
-			}
+                deck.discard(c);
+            }
 
 			dealHole(discarded.size(), s);
 		}
