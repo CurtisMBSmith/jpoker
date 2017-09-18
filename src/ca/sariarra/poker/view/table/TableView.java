@@ -1,20 +1,19 @@
 package ca.sariarra.poker.view.table;
 
-import static ca.sariarra.poker.game.action.HandAction.SHOWDOWN;
-
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-
 import ca.sariarra.poker.card.Card;
 import ca.sariarra.poker.game.action.HandAction;
 import ca.sariarra.poker.hand.component.HandActionLog;
 import ca.sariarra.poker.hand.component.Pot;
 import ca.sariarra.poker.player.Player;
 import ca.sariarra.poker.table.Table;
-import ca.sariarra.poker.view.card.CardView;
 import ca.sariarra.poker.view.table.component.PotView;
 import ca.sariarra.poker.view.table.component.SeatView;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
+import static ca.sariarra.poker.game.action.HandAction.SHOWDOWN;
 
 public class TableView {
 
@@ -23,8 +22,8 @@ public class TableView {
 	private final List<PotView> pots;
 	private final HandActionLog actionLog;
 	private final HandAction currentAction;
-	private final List<CardView> communityCards;
-	private int button;
+    private final List<Card> communityCards;
+    private int button;
 
 	public TableView(final Table table, final Player playerView) {
 		tableDesc = table.getDescription();
@@ -47,35 +46,27 @@ public class TableView {
 			}
 		}
 
-		pots = new ArrayList<PotView>(4);
-		for (Pot pot : table.getCurrentHand().getCurrentPots()) {
-			pots.add(new PotView(pot));
+        pots = new ArrayList<>(4);
+        for (Pot pot : table.getCurrentHand().getCurrentPots()) {
+            pots.add(new PotView(pot));
 		}
 
 		// Sort the pots from most to least contestors.
-		pots.sort(new Comparator<PotView>() {
-
-			@Override
-			public int compare(final PotView pot1, final PotView pot2) {
-				if (pot1.getContestors().size() < pot2.getContestors().size()) {
-					return 1;
-				}
-				else if (pot1.getContestors().size() > pot2.getContestors().size()) {
-					return -1;
-				}
-				else {
-					return 0;
-				}
-			}
-		});
+        pots.sort((pot1, pot2) -> {
+            if (pot1.getContestors().size() < pot2.getContestors().size()) {
+                return 1;
+            } else if (pot1.getContestors().size() > pot2.getContestors().size()) {
+                return -1;
+            } else {
+                return 0;
+            }
+        });
 
 		actionLog = table.getCurrentHand().getHandActionLog();
 		currentAction = table.getCurrentHand().getPhase();
-		communityCards = new ArrayList<CardView>(5);
-		for (Card card : table.getCurrentHand().getCommunityCards()) {
-			communityCards.add(new CardView(card));
-		}
-	}
+        communityCards = new LinkedList<>();
+        communityCards.addAll(table.getCurrentHand().getCommunityCards());
+    }
 
 	public String getTableDesc() {
 		return tableDesc;
